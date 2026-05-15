@@ -1,0 +1,1844 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RISE : Origins — De l'Aube à l'Essor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'night':   '#09090F',
+            'night-deep': '#04040A',
+            'aurora':  '#7B5EF5',
+            'gold':    '#A78BFA',
+            'sun':     '#C4B5FD',
+            'anchor':  '#10B981',
+            'disc-red':    '#F87171',
+            'disc-yellow': '#FBBF24',
+            'disc-green':  '#34D399',
+            'disc-blue':   '#60A5FA',
+          },
+          fontFamily: {
+            'sans':  ['Space Grotesk', 'Inter', 'sans-serif'],
+            'serif': ['Space Grotesk', 'sans-serif'],
+            'mono':  ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg:         #09090F;
+      --bg-card:    #0F0E1A;
+      --bg-subtle:  #141322;
+      --bg-hover:   #1A1830;
+      --accent:     #7B5EF5;
+      --accent-lt:  #A78BFA;
+      --accent-blue:#3B82F6;
+      --accent-dim: rgba(123,94,245,0.15);
+      --border:     rgba(123,94,245,0.18);
+      --border-sub: rgba(255,255,255,0.06);
+      --text:       #F0EEFF;
+      --text-muted: rgba(240,238,255,0.5);
+      --text-dim:   rgba(240,238,255,0.28);
+      --shadow-v:   rgba(123,94,245,0.2);
+      /* Rise headline gradient: violet → blue */
+      --grad-rise: linear-gradient(90deg, #8B5CF6 0%, #6366F1 40%, #3B82F6 100%);
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Space Grotesk', 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* ── Sunrise gradient ── */
+    .bg-sunrise {
+      background: linear-gradient(180deg, #04040A 0%, #09090F 25%, #0D0B1F 55%, #1A1040 78%, #2E1A6A 92%, #7B5EF5 100%);
+    }
+
+    /* ── Animations ── */
+    @keyframes rise {
+      from { transform: translateY(60px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 30px 12px rgba(123,94,245,0.40); }
+      50%       { box-shadow: 0 0 55px 22px rgba(167,139,250,0.55); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-border {
+      0%, 100% { border-color: rgba(123,94,245,0.3); }
+      50%       { border-color: rgba(123,94,245,0.7); }
+    }
+    .animate-rise   { animation: rise 1.2s ease-out forwards; }
+    .animate-glow   { animation: glow 3s ease-in-out infinite; }
+    .animate-fadeup { animation: fadeUp 0.6s ease-out forwards; }
+
+    /* ── Screen management ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Phase dot ── */
+    .phase-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+
+    /* ── Checklist ── */
+    .check-item { transition: all 0.3s ease; }
+    .check-item.done { opacity: 0.5; }
+    .check-item.done .check-label { text-decoration: line-through; }
+
+    /* ── DISC badge ── */
+    .disc-badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+
+    /* ── Chat ── */
+    .chat-bubble { max-width: 80%; border-radius: 16px; padding: 10px 14px; font-size: 14px; line-height: 1.6; }
+    .chat-user   { background: linear-gradient(135deg,#7B5EF5,#5B3FD4); color: white; border-bottom-right-radius: 4px; margin-left: auto; }
+    .chat-bot    { background: var(--bg-card); color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+
+    /* ── Card hover ── */
+    .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(123,94,245,0.22); }
+
+    /* ── Nav active ── */
+    .nav-item.active { color: #7B5EF5 !important; border-bottom: 2px solid #7B5EF5; }
+
+    /* ── Progress bar ── */
+    .progress-fill { transition: width 0.5s ease; }
+
+    /* ── Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(6,4,26,0.85); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; max-width: 500px; width: 100%; padding: 32px; position: relative; max-height: 90vh; overflow-y: auto; }
+
+    /* ── Quiz option ── */
+    .quiz-opt { border: 2px solid var(--border); border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all 0.2s; background: var(--bg-subtle); color: var(--text); }
+    .quiz-opt:hover   { border-color: #7B5EF5; background: var(--bg-hover); }
+    .quiz-opt.selected{ border-color: #7B5EF5; background: rgba(123,94,245,0.15); }
+    .quiz-opt.correct { border-color: #10B981; background: rgba(16,185,129,0.12); }
+    .quiz-opt.wrong   { border-color: #F87171; background: rgba(248,113,113,0.12); }
+
+    /* ── Shadows ── */
+    .shadow-sm  { box-shadow: 0 2px 8px rgba(123,94,245,0.12), 0 1px 3px rgba(0,0,0,0.2) !important; }
+    .shadow-lg  { box-shadow: 0 8px 24px rgba(123,94,245,0.18), 0 2px 8px rgba(0,0,0,0.3) !important; }
+    .shadow-xl  { box-shadow: 0 16px 40px rgba(123,94,245,0.22), 0 4px 12px rgba(0,0,0,0.3) !important; }
+    .shadow-2xl { box-shadow: 0 24px 60px rgba(123,94,245,0.28), 0 8px 20px rgba(0,0,0,0.4) !important; }
+
+    /* ── Input/select ── */
+    input, select, textarea { background: var(--bg-subtle) !important; color: var(--text) !important; border-color: var(--border) !important; }
+    input::placeholder { color: var(--text-dim) !important; }
+    input:focus, select:focus { border-color: #7B5EF5 !important; outline: none; }
+
+    /* ── Text overrides for dark mode ── */
+    .text-gray-300 { color: rgba(240,238,255,0.45) !important; }
+    .text-gray-400 { color: rgba(240,238,255,0.45) !important; }
+    .text-gray-500 { color: rgba(240,238,255,0.5) !important; }
+    .text-gray-600 { color: rgba(240,238,255,0.55) !important; }
+    .text-gray-700 { color: rgba(240,238,255,0.75) !important; }
+    .text-gray-800 { color: rgba(240,238,255,0.90) !important; }
+    .text-gray-900 { color: var(--text) !important; }
+
+    /* ── Mono label style (inspiré du site Rise) ── */
+    .label-mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(123,94,245,0.4); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 0 — LOGIN
+══════════════════════════════════════════ -->
+<div id="screen-login" class="screen active min-h-screen bg-sunrise flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
+  <!-- Stars -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-8 left-1/4 w-1 h-1 bg-aurora rounded-full opacity-70"></div>
+    <div class="absolute top-14 left-1/3 w-1.5 h-1.5 bg-aurora rounded-full opacity-50"></div>
+    <div class="absolute top-6 right-1/3 w-1 h-1 bg-aurora rounded-full opacity-60"></div>
+    <div class="absolute top-20 right-1/4 w-1 h-1 bg-aurora rounded-full opacity-40"></div>
+    <div class="absolute top-10 left-2/3 w-1 h-1 bg-aurora rounded-full opacity-80"></div>
+    <div class="absolute top-28 left-1/5 w-0.5 h-0.5 bg-aurora rounded-full opacity-60"></div>
+  </div>
+
+  <!-- Sun -->
+  <div class="animate-rise animate-glow w-24 h-24 rounded-full bg-gradient-to-b from-sun to-aurora mb-8 flex items-center justify-center shadow-2xl">
+    <span class="text-4xl">☀️</span>
+  </div>
+
+  <!-- Logo & Title -->
+  <div class="text-center mb-10 animate-fadeup" style="animation-delay:0.3s; opacity:0;">
+    <h1 class="font-serif text-5xl font-bold mb-2 tracking-wide" style="background:linear-gradient(90deg,#8B5CF6,#6366F1,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">RISE</h1>
+    <p class="text-lg font-light tracking-widest uppercase" style="background:linear-gradient(90deg,#A78BFA,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Origins</p>
+    <div class="w-16 h-px bg-aurora mx-auto my-4 opacity-60"></div>
+    <p class="text-white/70 text-sm italic">"De l'Aube à l'Essor"</p>
+  </div>
+
+  <!-- Card -->
+  <div class="bg-[#0F0E1A]/10 backdrop-blur-sm border border-white/20 rounded-3xl p-8 w-full max-w-sm animate-fadeup" style="animation-delay:0.6s; opacity:0;">
+    <p class="text-white/80 text-center text-sm mb-6 leading-relaxed">Chez Rise, chaque nouvelle aventure commence par une lumière.<br><span class="text-white/50 text-xs">La vôtre commence ici.</span></p>
+
+    <div class="space-y-3 mb-6">
+      <div>
+        <label class="text-white/60 text-xs uppercase tracking-wider mb-1 block">Adresse email</label>
+        <input type="email" placeholder="prenom.nom@rise.com" value="sophie.martin@rise.com"
+          class="w-full bg-[#0F0E1A]/20 border border-white/30 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-aurora">
+      </div>
+      <div>
+        <label class="text-white/60 text-xs uppercase tracking-wider mb-1 block">Mot de passe</label>
+        <input type="password" placeholder="••••••••" value="password"
+          class="w-full bg-[#0F0E1A]/20 border border-white/30 text-white placeholder-white/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-aurora">
+      </div>
+    </div>
+
+    <button onclick="showScreen('screen-role')" class="w-full bg-aurora hover:bg-orange-500 text-white font-semibold py-3 rounded-xl transition text-sm shadow-lg">
+      Commencer mon aventure →
+    </button>
+
+    <p class="text-center mt-4 text-white/40 text-xs">Connexion sécurisée via SSO Microsoft</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — ROLE SELECTION
+══════════════════════════════════════════ -->
+<div id="screen-role" class="screen min-h-screen relative overflow-hidden" style="background:#04040A;display:flex!important">
+<style>
+  #role-left { width:55%; min-height:100vh; position:relative; display:flex; flex-direction:column; justify-content:center; padding:60px 64px; background:linear-gradient(135deg,#04040A 0%,#080616 50%,#0D0B1F 100%); }
+  #role-right { width:45%; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:60px 52px; background:linear-gradient(180deg,#04040A 0%,#060410 100%); position:relative; }
+  #role-divider { position:absolute; top:0; bottom:0; left:55%; width:1px; background:linear-gradient(180deg,transparent 0%,rgba(123,94,245,0.4) 30%,rgba(123,94,245,0.6) 50%,rgba(123,94,245,0.4) 70%,transparent 100%); z-index:10; }
+  @media(max-width:768px){
+    #screen-role { flex-direction:column!important; }
+    #role-left { width:100%; min-height:auto; padding:52px 28px 36px; }
+    #role-right { width:100%; min-height:auto; padding:28px 28px 52px; }
+    #role-divider { display:none; }
+    #role-left-title { font-size:52px!important; }
+  }
+</style>
+
+  <!-- LEFT — Hero branding -->
+  <div id="role-left">
+    <!-- Stars left panel -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div style="position:absolute;top:8%;left:15%;width:2px;height:2px;background:white;border-radius:50%;opacity:0.6"></div>
+      <div style="position:absolute;top:14%;left:55%;width:1px;height:1px;background:white;border-radius:50%;opacity:0.4"></div>
+      <div style="position:absolute;top:6%;left:72%;width:2px;height:2px;background:white;border-radius:50%;opacity:0.7"></div>
+      <div style="position:absolute;top:22%;left:30%;width:1px;height:1px;background:white;border-radius:50%;opacity:0.3"></div>
+      <div style="position:absolute;top:35%;left:80%;width:1px;height:1px;background:white;border-radius:50%;opacity:0.5"></div>
+      <div style="position:absolute;bottom:30%;left:20%;width:2px;height:2px;background:white;border-radius:50%;opacity:0.4"></div>
+      <div style="position:absolute;bottom:18%;left:60%;width:1px;height:1px;background:white;border-radius:50%;opacity:0.5"></div>
+      <!-- Aurora glow -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:340px;background:radial-gradient(ellipse 80% 60% at 40% 100%,rgba(123,94,245,0.28) 0%,transparent 70%)"></div>
+      <div style="position:absolute;top:30%;left:10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%);filter:blur(40px)"></div>
+    </div>
+
+    <!-- Logo -->
+    <div class="relative z-10 animate-fadeup" style="animation-delay:0.05s;opacity:0;margin-bottom:48px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#A78BFA,#7B5EF5,#6366F1);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(123,94,245,0.55)">
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="5.5" fill="white" opacity="0.92"/>
+            <line x1="14" y1="2" x2="14" y2="6.5" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+            <line x1="14" y1="21.5" x2="14" y2="26" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+            <line x1="2" y1="14" x2="6.5" y2="14" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+            <line x1="21.5" y1="14" x2="26" y2="14" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+            <line x1="5.51" y1="5.51" x2="8.6" y2="8.6" stroke="white" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+            <line x1="19.4" y1="19.4" x2="22.49" y2="22.49" stroke="white" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+            <line x1="22.49" y1="5.51" x2="19.4" y2="8.6" stroke="white" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+            <line x1="8.6" y1="19.4" x2="5.51" y2="22.49" stroke="white" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <div>
+          <span style="font-size:13px;letter-spacing:0.28em;font-weight:700;text-transform:uppercase;color:rgba(167,139,250,0.7)">RISE</span>
+          <span style="font-size:10px;letter-spacing:0.22em;font-weight:500;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-left:8px">Origins</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grand titre hero -->
+    <div class="relative z-10 animate-fadeup" style="animation-delay:0.15s;opacity:0">
+      <h1 id="role-left-title" style="font-size:72px;font-weight:800;line-height:0.95;letter-spacing:-0.02em;font-family:serif;margin-bottom:28px">
+        <span style="background:linear-gradient(90deg,#8B5CF6 0%,#6366F1 45%,#3B82F6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block">DE L'AUBE</span>
+        <span style="color:rgba(255,255,255,0.92);display:block">À L'ESSOR.</span>
+      </h1>
+      <div style="width:48px;height:2px;background:linear-gradient(90deg,#7B5EF5,#3B82F6);border-radius:2px;margin-bottom:24px"></div>
+      <p style="color:rgba(255,255,255,0.38);font-size:14px;line-height:1.65;max-width:320px;letter-spacing:0.01em">
+        Chaque collaborateur Rise commence son aventure avec un parcours pensé pour révéler le meilleur de lui-même.
+      </p>
+    </div>
+
+    <!-- Bas de page gauche -->
+    <div class="relative z-10 animate-fadeup" style="animation-delay:0.3s;opacity:0;margin-top:auto;padding-top:52px">
+      <p style="font-size:10px;letter-spacing:0.18em;color:rgba(255,255,255,0.16);text-transform:uppercase">Family Office · Wealth Management · Patrimoine</p>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div id="role-divider"></div>
+
+  <!-- RIGHT — Sélection rôle -->
+  <div id="role-right">
+    <!-- Stars right panel -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div style="position:absolute;top:10%;right:20%;width:1px;height:1px;background:white;border-radius:50%;opacity:0.5"></div>
+      <div style="position:absolute;top:18%;right:8%;width:2px;height:2px;background:white;border-radius:50%;opacity:0.4"></div>
+      <div style="position:absolute;bottom:25%;right:15%;width:1px;height:1px;background:white;border-radius:50%;opacity:0.6"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:220px;background:radial-gradient(ellipse 70% 60% at 60% 100%,rgba(123,94,245,0.22) 0%,transparent 70%)"></div>
+    </div>
+
+    <div class="relative z-10 animate-fadeup" style="animation-delay:0.2s;opacity:0;max-width:380px;width:100%;margin:0 auto">
+      <p style="font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px">Bienvenue</p>
+      <h2 style="font-size:22px;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:6px;letter-spacing:0.01em">Choisissez votre espace</h2>
+      <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:32px;line-height:1.5">Sélectionnez votre rôle pour accéder à votre environnement personnalisé.</p>
+
+      <!-- Carte Nouveau Collaborateur -->
+      <button onclick="setRole('newcomer'); showScreen('screen-newcomer-dashboard')"
+        class="card-hover rounded-2xl text-left" style="width:100%;background:rgba(123,94,245,0.09);border:1px solid rgba(123,94,245,0.3);padding:18px 20px;position:relative;overflow:hidden;margin-bottom:10px;display:block">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(123,94,245,0.9),transparent)"></div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,#7B5EF5,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 20px rgba(123,94,245,0.35)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+              <span style="color:white;font-size:15px;font-weight:600">Nouveau Collaborateur</span>
+              <span style="font-size:9.5px;padding:2px 8px;border-radius:20px;background:rgba(123,94,245,0.22);color:#C4B5FD;letter-spacing:0.06em;font-weight:500">J+0</span>
+            </div>
+            <p style="color:rgba(255,255,255,0.36);font-size:12.5px;line-height:1.4">Vivez votre parcours d'intégration Rise</p>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;opacity:0.45"><path d="M3 8h10M9 4l4 4-4 4" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </button>
+
+      <!-- Carte Manager -->
+      <button onclick="setRole('manager'); showScreen('screen-manager')"
+        class="card-hover rounded-2xl text-left" style="width:100%;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.22);padding:18px 20px;position:relative;overflow:hidden;margin-bottom:10px;display:block">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,0.65),transparent)"></div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,#A78BFA,#7B5EF5);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 20px rgba(167,139,250,0.28)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div style="flex:1">
+            <span style="color:white;font-size:15px;font-weight:600;display:block;margin-bottom:5px">Manager</span>
+            <p style="color:rgba(255,255,255,0.36);font-size:12.5px;line-height:1.4">Superviser et accompagner mon équipe</p>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;opacity:0.45"><path d="M3 8h10M9 4l4 4-4 4" stroke="#C4B5FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </button>
+
+      <!-- Carte IT/RH -->
+      <button onclick="setRole('it'); showScreen('screen-it')"
+        class="card-hover rounded-2xl text-left" style="width:100%;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.24);padding:18px 20px;position:relative;overflow:hidden;margin-bottom:32px;display:block">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(16,185,129,0.55),transparent)"></div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,#059669,#10B981);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 20px rgba(16,185,129,0.28)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div style="flex:1">
+            <span style="color:white;font-size:15px;font-weight:600;display:block;margin-bottom:5px">IT / RH</span>
+            <p style="color:rgba(255,255,255,0.36);font-size:12.5px;line-height:1.4">Gérer les accès, équipements et formations</p>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;opacity:0.45"><path d="M3 8h10M9 4l4 4-4 4" stroke="#6EE7B7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </button>
+
+      <button onclick="showScreen('screen-login')" style="color:rgba(255,255,255,0.2);font-size:11px;letter-spacing:0.1em;display:block;text-align:center;width:100%">← Retour à la connexion</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — NEWCOMER DASHBOARD
+══════════════════════════════════════════ -->
+<div id="screen-newcomer-dashboard" class="screen min-h-screen bg-[#09090F]">
+  <!-- Top bar -->
+  <div class="bg-night px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-aurora flex items-center justify-center text-sm">☀️</div>
+      <div>
+        <span class="text-white font-semibold text-sm">RISE</span>
+        <span class="text-aurora text-xs ml-1 font-light">Origins</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="showScreen('screen-chatbot')" class="text-white/60 hover:text-aurora transition text-sm flex items-center gap-1.5">
+        <span>💬</span><span class="hidden sm:inline text-xs">Le Phare</span>
+      </button>
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-aurora to-gold flex items-center justify-center text-white text-sm font-bold cursor-pointer" onclick="showScreen('screen-profile')">SM</div>
+    </div>
+  </div>
+
+  <!-- Nav tabs -->
+  <div class="bg-[#0F0E1A] border-b border-[#1A1830] px-6 flex gap-6 overflow-x-auto sticky top-14 z-20">
+    <button onclick="showSubscreen('ns-home')" class="nav-item active py-3 text-sm font-medium whitespace-nowrap transition" data-ns="newcomer">🏠 Accueil</button>
+    <button onclick="showSubscreen('ns-contacts')" class="nav-item py-3 text-sm font-medium text-gray-400 hover:text-gray-700 whitespace-nowrap transition" data-ns="newcomer">👥 Contacts</button>
+    <button onclick="showSubscreen('ns-fo')" class="nav-item py-3 text-sm font-medium text-gray-400 hover:text-gray-700 whitespace-nowrap transition" data-ns="newcomer">🏦 Family Office</button>
+    <button onclick="showSubscreen('ns-ai')" class="nav-item py-3 text-sm font-medium text-gray-400 hover:text-gray-700 whitespace-nowrap transition" data-ns="newcomer">🤖 IA Knowledge</button>
+    <button onclick="showSubscreen('ns-docs')" class="nav-item py-3 text-sm font-medium text-gray-400 hover:text-gray-700 whitespace-nowrap transition" data-ns="newcomer">📋 Checklist</button>
+  </div>
+
+  <!-- Sub-screens -->
+  <div id="ns-home" class="ns-newcomer px-4 py-6 max-w-2xl mx-auto">
+
+    <!-- Welcome card -->
+    <div class="bg-gradient-to-r from-[#0F0E1A] to-[#141322] rounded-3xl p-6 mb-6 relative overflow-hidden">
+      <div class="absolute right-4 top-4 text-6xl opacity-20">☀️</div>
+      <p class="text-aurora text-xs font-medium uppercase tracking-wider mb-1">Lundi 19 Mai 2025 — Jour J</p>
+      <h2 class="font-serif text-white text-2xl mb-1">Bonjour, Sophie ! 👋</h2>
+      <p class="text-white/60 text-sm leading-relaxed">Toute l'équipe Rise vous attendait. Votre aventure commence aujourd'hui — explorez à votre rythme, chaque étape vous rapproche de l'essor.</p>
+      <div class="mt-4 flex items-center gap-2">
+        <div class="h-2 flex-grow bg-[#0F0E1A]/10 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-aurora to-sun rounded-full progress-fill" data-overall-bar style="width:0%"></div>
+        </div>
+        <span class="text-white/60 text-xs" data-overall-pct>0%</span>
+      </div>
+      <p class="text-white/40 text-xs mt-1" data-phase-label>Phase 1 / 5 en cours — L'Origine</p>
+    </div>
+
+    <!-- Phases timeline — rendered by _renderPhaseTimeline() -->
+    <h3 class="text-white/50 font-semibold text-xs uppercase tracking-wider mb-4">Votre Parcours</h3>
+    <div id="phases-timeline" class="space-y-2 mb-8"></div>
+
+    <!-- Quick actions -->
+    <h3 class="text-gray-700 font-semibold text-sm uppercase tracking-wider mb-4">Actions rapides</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="showScreen('screen-phase2')" class="bg-[#0F0E1A] rounded-2xl p-4 text-left card-hover shadow-sm">
+        <div class="text-2xl mb-2">👥</div>
+        <p class="font-medium text-sm text-gray-800">Organigramme</p>
+        <p class="text-xs text-gray-400 mt-0.5">Découvrir l'équipe</p>
+      </button>
+      <button onclick="showScreen('screen-chatbot')" class="bg-[#0F0E1A] rounded-2xl p-4 text-left card-hover shadow-sm">
+        <div class="text-2xl mb-2">💬</div>
+        <p class="font-medium text-sm text-gray-800">Le Phare</p>
+        <p class="text-xs text-gray-400 mt-0.5">Poser une question</p>
+      </button>
+      <button onclick="showSubscreen('ns-docs')" class="bg-[#0F0E1A] rounded-2xl p-4 text-left card-hover shadow-sm">
+        <div class="text-2xl mb-2">✅</div>
+        <p class="font-medium text-sm text-gray-800">Checklist</p>
+        <p class="text-xs text-white/40 mt-0.5" data-cl-count>0/10 complétées</p>
+      </button>
+      <button onclick="showScreen('screen-phase1')" class="bg-[#0F0E1A] rounded-2xl p-4 text-left card-hover shadow-sm">
+        <div class="text-2xl mb-2">✉️</div>
+        <p class="font-medium text-sm text-gray-800">Signature mail</p>
+        <p class="text-xs text-gray-400 mt-0.5">Copier / configurer</p>
+      </button>
+    </div>
+
+    <!-- Agenda preview -->
+    <h3 class="text-gray-700 font-semibold text-sm uppercase tracking-wider mt-8 mb-4">Agenda — Semaine 1</h3>
+    <div class="bg-[#0F0E1A] rounded-2xl overflow-hidden shadow-sm">
+      <div id="agenda-days"></div>
+    </div>
+  </div>
+
+  <!-- Sub: Contacts -->
+  <div id="ns-contacts" class="ns-newcomer hidden">
+    <!-- injected by showSubscreen → triggers screen-phase2 -->
+    <div class="flex items-center justify-center h-40">
+      <button onclick="showScreen('screen-phase2')" class="bg-night text-white px-6 py-3 rounded-xl text-sm">Ouvrir l'Organigramme →</button>
+    </div>
+  </div>
+
+  <!-- Sub: Family Office -->
+  <div id="ns-fo" class="ns-newcomer hidden px-4 py-6 max-w-2xl mx-auto">
+    <div class="bg-gradient-to-br from-[#0F0E1A] to-[#141322] rounded-3xl p-6 mb-6">
+      <h2 class="font-serif text-white text-xl mb-2">🏦 Family Office Rise</h2>
+      <p class="text-white/60 text-sm leading-relaxed">Fondée sur la conviction que chaque patrimoine est unique, Rise est un Multi-Family Office indépendant qui accompagne des familles d'entrepreneurs, d'héritiers et de dirigeants dans la durée — avec discrétion, expertise et une profonde exigence humaine.</p>
+    </div>
+    <div class="space-y-4">
+      <div class="bg-[#0F0E1A] rounded-2xl p-5 shadow-sm">
+        <h3 class="font-semibold text-gray-800 mb-2">🎯 Notre mission</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Nous aidons nos clients à structurer, préserver et transmettre leur patrimoine sur le long terme. Cela passe par une approche globale : conseil juridique et fiscal, allocation d'actifs sur mesure, accompagnement philanthropique, et gestion des dynamiques familiales. Chez Rise, la relation prime toujours sur la transaction.</p>
+      </div>
+      <div class="bg-[#0F0E1A] rounded-2xl p-5 shadow-sm">
+        <h3 class="font-semibold text-gray-800 mb-3">📍 Nos bureaux</h3>
+        <div class="space-y-2">
+          <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇵🇹</span><div><p class="font-medium text-sm">Lisbonne</p><p class="text-xs text-gray-400">Bureau principal · Rua Augusta</p></div></div>
+          <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇨🇭</span><div><p class="font-medium text-sm">Charles de Bons</p><p class="text-xs text-gray-400">Siège historique · Valais</p></div></div>
+          <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇱🇺</span><div><p class="font-medium text-sm">Luxembourg</p><p class="text-xs text-gray-400">Hub financier · Kirchberg</p></div></div>
+        </div>
+      </div>
+      <div class="bg-[#0F0E1A] rounded-2xl p-5 shadow-sm">
+        <h3 class="font-semibold text-gray-800 mb-3">📖 Glossaire métier</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Family Office</span><span class="text-gray-500">Structure privée dédiée à la gestion globale du patrimoine d'une ou plusieurs familles. Rise est un Multi-Family Office : nous servons plusieurs familles avec la même exigence qu'un Single-Family Office.</span></div>
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Wealth Planning</span><span class="text-gray-500">Planification patrimoniale sur le long terme : optimisation fiscale, préparation de la transmission, protection des actifs et structuration internationale.</span></div>
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Allocation d'actifs</span><span class="text-gray-500">Répartition stratégique des investissements entre marchés cotés, private equity, immobilier, actifs réels et liquidités, selon le profil de risque du client.</span></div>
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Due diligence</span><span class="text-gray-500">Audit approfondi mené avant tout investissement ou partenariat : analyse financière, juridique, fiscale et humaine. Chez Rise, elle est systématique et documentée.</span></div>
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Philanthropie</span><span class="text-gray-500">Accompagnement de nos clients dans leurs démarches de don, création de fondations et impact investing. Rise dispose d'une équipe dédiée philanthropy advisory.</span></div>
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Mandant / Mandataire</span><span class="text-gray-500">Le mandant est la famille cliente. Rise agit en tant que mandataire, avec un devoir fiduciaire strict : nous agissons toujours dans l'intérêt exclusif du client.</span></div>
+          <div class="flex gap-3 p-2 rounded-lg hover:bg-[#1A1830]"><span class="font-medium text-gold w-36 shrink-0">Consolidation</span><span class="text-gray-500">Vue unifiée de l'ensemble du patrimoine d'un client, toutes banques et classes d'actifs confondues. C'est souvent le premier livrable Rise pour un nouveau client.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub: IA Knowledge -->
+  <div id="ns-ai" class="ns-newcomer hidden px-4 py-6 max-w-2xl mx-auto">
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 rounded-2xl bg-sun/20 flex items-center justify-center text-3xl mx-auto mb-3">🤖</div>
+      <h2 class="font-serif text-xl text-gray-800">IA Knowledge</h2>
+      <p class="text-gray-400 text-sm mt-1">Quiz adaptatif · Formation personnalisée</p>
+    </div>
+    <div class="space-y-4">
+      <button onclick="showScreen('screen-quiz')" class="w-full bg-gradient-to-r from-[#0F0E1A] to-[#141322] rounded-2xl p-5 text-left card-hover">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-sun/20 flex items-center justify-center text-2xl">📊</div>
+          <div>
+            <h3 class="font-medium text-white">Test de niveau IT</h3>
+            <p class="text-white/50 text-sm mt-0.5">15 min · Adaptatif IA · 12 questions</p>
+          </div>
+          <span class="ml-auto text-aurora">→</span>
+        </div>
+      </button>
+      <div class="bg-[#0F0E1A] rounded-2xl p-5 shadow-sm opacity-60">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-[#1A1830] flex items-center justify-center text-2xl">🎓</div>
+          <div>
+            <h3 class="font-medium text-gray-500">Formation personnalisée</h3>
+            <p class="text-gray-400 text-sm mt-0.5">Disponible après le quiz IT</p>
+          </div>
+          <span class="ml-auto text-gray-300">🔒</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub: Checklist -->
+  <div id="ns-docs" class="ns-newcomer hidden px-4 py-6 max-w-2xl mx-auto">
+    <div id="checklist-container"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3 — PHASE 0: L'ORIGINE
+══════════════════════════════════════════ -->
+<div id="screen-phase0" class="screen min-h-screen bg-[#09090F]">
+  <div class="bg-night px-6 py-4 flex items-center gap-3">
+    <button onclick="showScreen('screen-newcomer-dashboard')" class="text-white/60 hover:text-white text-xl">←</button>
+    <div class="w-8 h-8 rounded-full bg-aurora flex items-center justify-center text-sm">🌑</div>
+    <div>
+      <h1 class="text-white font-semibold text-sm">L'Origine</h1>
+      <p class="text-aurora text-xs">Phase 0 · Pré-arrivée</p>
+    </div>
+  </div>
+  <div class="px-4 py-6 max-w-2xl mx-auto space-y-6">
+    <!-- Profile form -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-6 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-4">📸 Votre profil Rise</h2>
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-aurora to-gold flex items-center justify-center text-3xl cursor-pointer hover:opacity-80 transition shadow-lg">👤</div>
+        <div>
+          <button class="text-aurora text-sm font-medium">Ajouter une photo</button>
+          <p class="text-gray-400 text-xs mt-1">JPG ou PNG · max 5MB</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2 sm:col-span-1">
+          <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Prénom</label>
+          <input id="p-firstname" value="Sophie" class="w-full border border-[#2a2450] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-aurora bg-[#09090F] text-white">
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Nom</label>
+          <input id="p-lastname" value="Martin" class="w-full border border-[#2a2450] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-aurora bg-[#09090F] text-white">
+        </div>
+        <div class="col-span-2">
+          <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Poste</label>
+          <input id="p-role" value="Analyst Patrimoine" class="w-full border border-[#2a2450] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-aurora bg-[#09090F] text-white">
+        </div>
+        <div class="col-span-2">
+          <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Bureau de rattachement</label>
+          <select id="p-office" class="w-full border border-[#2a2450] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-aurora bg-[#0F0E1A] text-white">
+            <option value="lisbonne" selected>🇵🇹 Lisbonne</option>
+            <option value="cdebons">🇨🇭 Charles de Bons</option>
+            <option value="luxembourg">🇱🇺 Luxembourg</option>
+          </select>
+        </div>
+        <div class="col-span-2">
+          <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Date de prise de poste</label>
+          <input type="date" value="2025-05-19" class="w-full border border-[#2a2450] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-aurora bg-[#09090F] text-white">
+        </div>
+      </div>
+      <button onclick="saveProfile()" class="mt-4 w-full bg-gradient-to-r from-aurora to-gold text-white py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition">Sauvegarder le profil →</button>
+    </div>
+
+    <!-- IT Request -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-5 border border-aurora/20">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-anchor/10 flex items-center justify-center text-xl">💻</div>
+        <div>
+          <h3 class="font-semibold text-white text-sm">Demande d'accès IT</h3>
+          <p class="text-white/40 text-xs">Transmis à Romain Duval · IT Manager</p>
+        </div>
+      </div>
+      <p class="text-white/60 text-sm mb-4">Déclenche la configuration de votre poste, email, Microsoft 365, badge et accès applicatifs.</p>
+      <button onclick="submitITRequest()" id="it-req-btn"
+        class="w-full py-3 rounded-xl text-sm font-semibold transition text-white"
+        style="background:linear-gradient(135deg,#10B981,#059669)">
+        📨 Envoyer la demande IT
+      </button>
+    </div>
+
+    <!-- Culture preview -->
+    <div class="bg-gradient-to-br from-[#0F0E1A] to-[#141322] rounded-3xl p-6">
+      <h2 class="font-semibold text-white mb-4">🎬 L'univers Rise — Accès anticipé</h2>
+      <div class="bg-black/30 rounded-2xl aspect-video flex items-center justify-center cursor-pointer hover:bg-black/20 transition mb-4">
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-full bg-aurora flex items-center justify-center text-2xl mx-auto mb-2 shadow-lg">▶️</div>
+          <p class="text-white/70 text-sm">Vidéo de présentation Rise</p>
+          <p class="text-white/40 text-xs">3:42 min</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <a href="#" class="bg-[#0F0E1A]/10 rounded-xl p-3 text-center hover:bg-[#0F0E1A]/20 transition">
+          <div class="text-xl mb-1">💼</div>
+          <p class="text-white/70 text-xs">LinkedIn</p>
+        </a>
+        <a href="#" class="bg-[#0F0E1A]/10 rounded-xl p-3 text-center hover:bg-[#0F0E1A]/20 transition">
+          <div class="text-xl mb-1">📸</div>
+          <p class="text-white/70 text-xs">Instagram</p>
+        </a>
+        <a href="#" class="bg-[#0F0E1A]/10 rounded-xl p-3 text-center hover:bg-[#0F0E1A]/20 transition">
+          <div class="text-xl mb-1">🌐</div>
+          <p class="text-white/70 text-xs">Site web</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4 — PHASE 1: L'AUBE (JOUR J)
+══════════════════════════════════════════ -->
+<div id="screen-phase1" class="screen min-h-screen bg-[#09090F]">
+  <div class="bg-gradient-to-r from-aurora to-[#A78BFA] px-6 py-8 relative overflow-hidden">
+    <button onclick="showScreen('screen-newcomer-dashboard')" class="text-white/70 hover:text-white text-xl absolute top-4 left-4">←</button>
+    <div class="absolute right-4 top-0 text-8xl opacity-20">🌅</div>
+    <div class="pt-4">
+      <p class="text-white/70 text-xs uppercase tracking-widest mb-1">Jour J · L'Aube</p>
+      <h1 class="font-serif text-3xl text-white mb-2">Bienvenue Sophie !</h1>
+      <p class="text-white/80 text-sm italic">"Votre lumière commence aujourd'hui."</p>
+    </div>
+  </div>
+
+  <div class="px-4 py-6 max-w-2xl mx-auto space-y-5">
+    <!-- Message du manager -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-6 shadow-sm border-l-4 border-aurora">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-night flex items-center justify-center text-sm font-bold text-gold">AL</div>
+        <div>
+          <p class="font-medium text-sm text-gray-800">Antoine Lemaire</p>
+          <p class="text-gray-400 text-xs">Votre manager · Head of Wealth</p>
+        </div>
+      </div>
+      <p class="text-gray-600 text-sm leading-relaxed italic">"Sophie, bienvenue dans la famille Rise. Nous vous avons choisie pour votre rigueur, votre curiosité et votre sens du service — exactement les valeurs qui nous animent depuis le premier jour. Votre desk est prêt, votre équipe vous attend avec impatience. Passez me voir dès votre arrivée, j'ai hâte de vous présenter tout le monde. Cette journée n'est que le début d'une belle aventure. 🌟"</p>
+    </div>
+
+    <!-- Bureau tabs -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-6 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-4">📍 Votre bureau — Lisbonne</h2>
+      <div class="flex gap-2 mb-4">
+        <button class="px-4 py-2 bg-aurora text-white rounded-xl text-sm font-medium">🇵🇹 Lisbonne</button>
+        <button class="px-4 py-2 bg-[#1A1830] text-gold rounded-xl text-sm hover:bg-aurora/20 transition" onclick="openModal('modal-bureau', 'cdebons')">🇨🇭 Ch. de Bons</button>
+        <button class="px-4 py-2 bg-[#1A1830] text-gold rounded-xl text-sm hover:bg-aurora/20 transition" onclick="openModal('modal-bureau', 'luxembourg')">🇱🇺 Luxembourg</button>
+      </div>
+      <div class="bg-[#1A1830] rounded-2xl h-36 flex items-center justify-center mb-4 overflow-hidden">
+        <div class="text-center">
+          <div class="text-4xl mb-2">🏙️</div>
+          <p class="text-gray-500 text-sm">Rua Augusta, 12 · Baixa-Chiado</p>
+          <p class="text-gray-400 text-xs">Lisbonne, Portugal · 7ème étage</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-[#141322] rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Votre desk</p>
+          <p class="font-medium text-sm text-gray-800">Bureau 3B · Open space Wealth</p>
+        </div>
+        <div class="bg-[#141322] rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Badge accès</p>
+          <p class="font-medium text-sm text-gray-800">À récupérer à l'accueil (RDC)</p>
+        </div>
+        <div class="bg-[#141322] rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Restaurant</p>
+          <p class="font-medium text-sm text-gray-800">2ème étage · 12h–14h</p>
+        </div>
+        <div class="bg-[#141322] rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Contact accueil</p>
+          <p class="font-medium text-sm text-gray-800">+351 21 123 4567</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signature mail -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-6 shadow-sm">
+      <h2 class="font-semibold text-white mb-1">✉️ Votre signature email</h2>
+      <p class="text-gray-400 text-xs mb-4">Générée automatiquement · Prête à copier</p>
+      <div class="bg-[#141322] rounded-2xl p-4 border border-[#1A1830] text-sm font-mono leading-loose text-gray-700 select-all cursor-text" id="email-sig">
+        <p class="font-semibold text-white">Sophie Martin</p>
+        <p class="text-aurora">Analyst Patrimoine</p>
+        <p class="text-gray-400 text-xs mt-1">RISE Family Office · Lisbonne</p>
+        <p class="text-gray-400 text-xs">📞 +351 21 123 4568 · 🌐 www.rise.com</p>
+        <p class="text-gray-400 text-xs">📍 Rua Augusta, 12 · 1100-053 Lisbonne</p>
+      </div>
+      <button onclick="copySignature()" class="mt-3 w-full border border-aurora text-aurora py-2.5 rounded-xl text-sm font-medium hover:bg-aurora hover:text-white transition">
+        Copier la signature
+      </button>
+      <p id="sig-copied" class="text-center text-green-600 text-xs mt-2 hidden">✓ Signature copiée dans le presse-papier !</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 5 — PHASE 2: LE LEVER (DISC)
+══════════════════════════════════════════ -->
+<div id="screen-phase2" class="screen min-h-screen bg-[#09090F]">
+  <div class="bg-gradient-to-r from-gold to-aurora px-6 py-6">
+    <button onclick="showScreen('screen-newcomer-dashboard')" class="text-white/70 hover:text-white text-xl absolute">←</button>
+    <div class="pt-6">
+      <p class="text-white/70 text-xs uppercase tracking-widest mb-1">Semaine 1 · Le Lever</p>
+      <h1 class="font-serif text-2xl text-white">La Boussole — Votre équipe</h1>
+    </div>
+  </div>
+
+  <div class="px-4 py-5 max-w-2xl mx-auto">
+    <!-- DISC legend -->
+    <div class="grid grid-cols-4 gap-2 mb-5">
+      <button onclick="filterDISC('D')" class="disc-filter bg-red-50 border-2 border-disc-red rounded-xl p-2 text-center transition hover:bg-red-100" data-disc="D">
+        <div class="w-5 h-5 rounded-full bg-disc-red mx-auto mb-1"></div>
+        <p class="text-xs font-semibold text-disc-red">D</p>
+        <p class="text-xs text-gray-500">Dominant</p>
+      </button>
+      <button onclick="filterDISC('I')" class="disc-filter bg-yellow-50 border-2 border-disc-yellow rounded-xl p-2 text-center transition hover:bg-yellow-100" data-disc="I">
+        <div class="w-5 h-5 rounded-full bg-disc-yellow mx-auto mb-1"></div>
+        <p class="text-xs font-semibold text-disc-yellow">I</p>
+        <p class="text-xs text-gray-500">Influent</p>
+      </button>
+      <button onclick="filterDISC('S')" class="disc-filter bg-green-50 border-2 border-disc-green rounded-xl p-2 text-center transition hover:bg-green-100" data-disc="S">
+        <div class="w-5 h-5 rounded-full bg-disc-green mx-auto mb-1"></div>
+        <p class="text-xs font-semibold text-disc-green">S</p>
+        <p class="text-xs text-gray-500">Stable</p>
+      </button>
+      <button onclick="filterDISC('C')" class="disc-filter bg-blue-50 border-2 border-disc-blue rounded-xl p-2 text-center transition hover:bg-blue-100" data-disc="C">
+        <div class="w-5 h-5 rounded-full bg-disc-blue mx-auto mb-1"></div>
+        <p class="text-xs font-semibold text-disc-blue">C</p>
+        <p class="text-xs text-gray-500">Consciencieux</p>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="relative mb-4">
+      <input id="people-search" oninput="renderPeople()" type="text" placeholder="Rechercher un collaborateur..." class="w-full bg-[#0F0E1A] border border-[#2a2450] rounded-xl px-4 py-2.5 pl-10 text-sm focus:outline-none focus:border-gold">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+    </div>
+
+    <!-- Filter by office -->
+    <div class="flex gap-2 mb-5 overflow-x-auto pb-1">
+      <button onclick="filterOffice('all')" class="office-filter bg-night text-white px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="all">Tous</button>
+      <button onclick="filterOffice('lisbonne')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="lisbonne">🇵🇹 Lisbonne</button>
+      <button onclick="filterOffice('cdebons')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="cdebons">🇨🇭 Ch. de Bons</button>
+      <button onclick="filterOffice('luxembourg')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="luxembourg">🇱🇺 Luxembourg</button>
+    </div>
+
+    <!-- People grid -->
+    <div id="people-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6"></div>
+
+    <!-- DISC guide -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-5 shadow-sm">
+      <h3 class="font-semibold text-gray-800 mb-3">💡 Guide de communication</h3>
+      <div class="space-y-3" id="disc-guide"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 6 — CHATBOT "LE PHARE"
+══════════════════════════════════════════ -->
+<div id="screen-chatbot" class="screen min-h-screen bg-[#09090F] flex flex-col" style="height:100vh;">
+  <div class="bg-night px-6 py-4 flex items-center gap-3 flex-shrink-0">
+    <button onclick="showScreen('screen-newcomer-dashboard')" class="text-white/60 hover:text-white text-xl">←</button>
+    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-aurora to-gold flex items-center justify-center text-lg shadow animate-glow">🏮</div>
+    <div>
+      <h1 class="text-white font-semibold text-sm">Le Phare</h1>
+      <p class="text-aurora text-xs">IA Rise · Disponible 24/7</p>
+    </div>
+    <div class="ml-auto flex items-center gap-1.5">
+      <div class="w-2 h-2 rounded-full bg-green-400"></div>
+      <span class="text-green-400 text-xs">En ligne</span>
+    </div>
+  </div>
+
+  <div id="chat-messages" class="flex-grow overflow-y-auto px-4 py-5 space-y-4" style="max-height: calc(100vh - 130px);">
+    <!-- Initial bot message -->
+    <div class="flex items-end gap-2">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-aurora to-gold flex-shrink-0 flex items-center justify-center text-sm">🏮</div>
+      <div class="chat-bubble chat-bot">
+        <p>Bonjour Sophie ! 👋 Je suis <strong>Le Phare</strong>, votre assistant Rise disponible 24h/24.</p>
+        <p class="mt-2">Je peux vous aider sur : la culture Rise, vos outils, vos accès, les procédures internes, ou toute autre question sur votre intégration.</p>
+        <p class="mt-2 text-gray-400 text-xs">Par quoi puis-je commencer ?</p>
+      </div>
+    </div>
+    <!-- Quick replies -->
+    <div id="quick-replies" class="flex flex-wrap gap-2 ml-10">
+      <button onclick="sendQuickReply('Comment configurer ma signature mail ?')" class="text-xs bg-[#0F0E1A] border border-[#2a2450] text-gray-600 px-3 py-1.5 rounded-xl hover:border-aurora hover:text-aurora transition">✉️ Signature mail</button>
+      <button onclick="sendQuickReply('Qui est mon manager ?')" class="text-xs bg-[#0F0E1A] border border-[#2a2450] text-gray-600 px-3 py-1.5 rounded-xl hover:border-aurora hover:text-aurora transition">👤 Mon manager</button>
+      <button onclick="sendQuickReply('Quelles applications dois-je utiliser ?')" class="text-xs bg-[#0F0E1A] border border-[#2a2450] text-gray-600 px-3 py-1.5 rounded-xl hover:border-aurora hover:text-aurora transition">💻 Mes applis</button>
+      <button onclick="sendQuickReply('Comment fonctionne le Family Office ?')" class="text-xs bg-[#0F0E1A] border border-[#2a2450] text-gray-600 px-3 py-1.5 rounded-xl hover:border-aurora hover:text-aurora transition">🏦 Family Office</button>
+    </div>
+  </div>
+
+  <div class="px-4 pb-4 flex-shrink-0 bg-[#09090F]">
+    <div class="flex gap-2 bg-[#0F0E1A] border border-[#2a2450] rounded-2xl p-2 shadow-sm">
+      <input id="chat-input" type="text" placeholder="Posez votre question à Le Phare..." class="flex-grow px-3 py-2 text-sm focus:outline-none bg-transparent" onkeypress="handleChatKeypress(event)">
+      <button onclick="sendChat()" class="bg-night text-white w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 hover:bg-aurora transition text-lg">→</button>
+    </div>
+    <p class="text-center text-gray-300 text-xs mt-2">Le Phare est connecté à la base de connaissances Rise via SharePoint</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 7 — QUIZ IT (PHASE 3 — L'ESSOR)
+══════════════════════════════════════════ -->
+<div id="screen-quiz" class="screen min-h-screen bg-[#09090F]">
+  <div class="bg-gradient-to-r from-sun to-aurora px-6 py-6">
+    <button onclick="showScreen('screen-newcomer-dashboard')" class="text-white/70 hover:text-white text-xl absolute">←</button>
+    <div class="pt-6">
+      <p class="text-white/70 text-xs uppercase tracking-widest mb-1">Phase 3 · L'Essor</p>
+      <h1 class="font-serif text-2xl text-white">Test de niveau IT</h1>
+      <div class="mt-3 flex items-center gap-3">
+        <div class="h-2 flex-grow bg-[#0F0E1A]/30 rounded-full overflow-hidden">
+          <div id="quiz-progress" class="h-full bg-aurora rounded-full transition-all" style="width:0%"></div>
+        </div>
+        <span id="quiz-counter" class="text-white/80 text-xs">0 / 5</span>
+      </div>
+    </div>
+  </div>
+  <div class="px-4 py-6 max-w-xl mx-auto" id="quiz-content"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 8 — MANAGER DASHBOARD
+══════════════════════════════════════════ -->
+<div id="screen-manager" class="screen min-h-screen bg-[#09090F]">
+  <div class="bg-night px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-gold flex items-center justify-center text-sm">🧭</div>
+      <div>
+        <span class="text-white font-semibold text-sm">Espace Manager</span>
+        <p class="text-gold text-xs">Antoine Lemaire</p>
+      </div>
+    </div>
+    <button onclick="showScreen('screen-role')" class="text-white/40 text-xs hover:text-white/70">Changer →</button>
+  </div>
+
+  <div class="px-4 py-6 max-w-2xl mx-auto space-y-5">
+    <!-- Alert J-1 -->
+    <div class="bg-aurora/10 border border-aurora/30 rounded-2xl p-4 flex items-center gap-3">
+      <span class="text-2xl">🔔</span>
+      <div>
+        <p class="font-medium text-sm text-aurora">Rappel J-1</p>
+        <p class="text-gray-500 text-xs">Sophie Martin arrive demain. 3 tâches restantes sur votre checklist.</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-[#0F0E1A] rounded-2xl p-4 text-center shadow-sm">
+        <p class="text-2xl font-bold text-aurora">2</p>
+        <p class="text-xs text-gray-400 mt-1">Onboardings actifs</p>
+      </div>
+      <div class="bg-[#0F0E1A] rounded-2xl p-4 text-center shadow-sm">
+        <p class="text-2xl font-bold text-aurora">1</p>
+        <p class="text-xs text-gray-400 mt-1">Arrivée demain</p>
+      </div>
+      <div class="bg-[#0F0E1A] rounded-2xl p-4 text-center shadow-sm">
+        <p class="text-2xl font-bold text-anchor">8</p>
+        <p class="text-xs text-gray-400 mt-1">Tâches complètes</p>
+      </div>
+    </div>
+
+    <!-- Newcomers list -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-5 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-4">👥 Nouveaux collaborateurs</h2>
+      <div class="space-y-3">
+        <div class="flex items-center gap-3 p-3 bg-gold/5 rounded-2xl border border-gold/20 cursor-pointer hover:bg-gold/10 transition" onclick="openModal('modal-newcomer-detail', 'sophie')">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-aurora to-gold flex items-center justify-center text-sm font-bold text-white">SM</div>
+          <div class="flex-grow">
+            <div class="flex items-center gap-2">
+              <p class="font-medium text-sm text-gray-800">Sophie Martin</p>
+              <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">Demain</span>
+            </div>
+            <p class="text-gray-400 text-xs">Analyst Patrimoine · Lisbonne</p>
+            <div class="mt-2 flex items-center gap-2">
+              <div class="h-1.5 bg-[#1A1830] rounded-full overflow-hidden w-28">
+                <div id="sophie-progress-bar" class="h-full bg-aurora rounded-full transition-all" style="width:0%"></div>
+              </div>
+              <span id="sophie-progress-pct" class="text-white/40 text-xs">0%</span>
+            </div>
+          </div>
+          <span class="text-white/40">→</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-[#1A1830] transition cursor-pointer">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-anchor to-green-400 flex items-center justify-center text-sm font-bold text-white">TC</div>
+          <div class="flex-grow">
+            <div class="flex items-center gap-2">
+              <p class="font-medium text-sm text-gray-800">Thomas Chabert</p>
+              <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Semaine 3</span>
+            </div>
+            <p class="text-gray-400 text-xs">Associate · Luxembourg</p>
+            <div class="mt-2 h-1.5 bg-[#1A1830] rounded-full overflow-hidden w-32">
+              <div class="h-full bg-anchor rounded-full" style="width:75%"></div>
+            </div>
+          </div>
+          <span class="text-gray-300">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manager checklist -->
+    <div class="bg-[#0F0E1A] rounded-3xl p-5 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-4">✅ Checklist Manager — Sophie Martin</h2>
+      <div class="space-y-3" id="manager-checklist"></div>
+    </div>
+
+    <!-- Agenda block -->
+    <div class="bg-gradient-to-r from-[#0F0E1A] to-[#141322] rounded-3xl p-5">
+      <h2 class="font-semibold text-white mb-3">📅 Agenda bloqué</h2>
+      <div class="bg-[#0F0E1A]/10 rounded-2xl p-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-aurora rounded-xl p-2 text-center min-w-12">
+            <p class="text-white/70 text-xs">Lun</p>
+            <p class="text-white font-bold text-lg leading-tight">19</p>
+            <p class="text-white/70 text-xs">Mai</p>
+          </div>
+          <div>
+            <p class="font-medium text-white text-sm">🌅 Accueil Sophie Martin</p>
+            <p class="text-white/50 text-xs">09:00 – 11:00 · Jour J</p>
+            <p class="text-white/40 text-xs">Bureau Lisbonne · Salle Tagus</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 9 — IT DASHBOARD
+══════════════════════════════════════════ -->
+<div id="screen-it" class="screen min-h-screen bg-[#09090F]">
+  <div class="bg-night px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-anchor flex items-center justify-center text-sm">⚙️</div>
+      <div>
+        <span class="text-white font-semibold text-sm">Espace IT / RH</span>
+        <p class="text-anchor text-xs">Marie Dupont · IT Manager</p>
+      </div>
+    </div>
+    <button onclick="showScreen('screen-role')" class="text-white/40 text-xs hover:text-white/70">Changer →</button>
+  </div>
+
+  <div class="px-4 py-6 max-w-2xl mx-auto space-y-5">
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-[#0F0E1A] rounded-2xl p-4 shadow-sm text-center">
+        <p id="it-stat-done" class="text-2xl font-bold text-anchor">—</p>
+        <p class="text-xs text-white/40 mt-1">Accès activés</p>
+      </div>
+      <div class="bg-[#0F0E1A] rounded-2xl p-4 shadow-sm text-center">
+        <p id="it-stat-pending" class="text-2xl font-bold text-aurora">—</p>
+        <p class="text-xs text-white/40 mt-1">En attente</p>
+      </div>
+    </div>
+    <div id="it-provision-container"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+
+<!-- Person detail modal -->
+<div id="modal-person" class="modal-overlay hidden" onclick="closeModal('modal-person')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button onclick="closeModal('modal-person')" class="absolute top-4 right-4 text-gray-300 hover:text-gray-600 text-2xl">×</button>
+    <div id="modal-person-content"></div>
+  </div>
+</div>
+
+<!-- Newcomer detail for manager -->
+<div id="modal-newcomer-detail" class="modal-overlay hidden" onclick="closeModal('modal-newcomer-detail')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button onclick="closeModal('modal-newcomer-detail')" class="absolute top-4 right-4 text-gray-300 hover:text-gray-600 text-2xl">×</button>
+    <div class="text-center mb-5">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-aurora to-gold flex items-center justify-center text-2xl font-bold text-white mx-auto mb-3">SM</div>
+      <h2 class="font-serif text-xl text-gray-800">Sophie Martin</h2>
+      <p class="text-gray-400 text-sm">Analyst Patrimoine · Lisbonne</p>
+      <p class="text-aurora text-xs mt-1">📅 Arrivée le 19 Mai 2025</p>
+    </div>
+    <div class="space-y-3">
+      <div class="bg-[#141322] rounded-xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-gray-700">Progression globale</span>
+          <span class="text-aurora text-sm font-bold">35%</span>
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full bg-aurora rounded-full" style="width:35%"></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="bg-green-50 rounded-xl p-3 text-center"><p class="text-green-700 font-semibold">Phase 0</p><p class="text-green-500">✓ Terminé</p></div>
+        <div class="bg-green-50 rounded-xl p-3 text-center"><p class="text-green-700 font-semibold">Phase 1</p><p class="text-green-500">✓ Terminé</p></div>
+        <div class="bg-amber-50 rounded-xl p-3 text-center"><p class="text-amber-700 font-semibold">Phase 2</p><p class="text-amber-500">⟳ En cours</p></div>
+        <div class="bg-[#141322] rounded-xl p-3 text-center"><p class="text-gray-500 font-semibold">Phase 3</p><p class="text-gray-400">🔒 Verrouillé</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Copy toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-night text-white px-5 py-3 rounded-full text-sm shadow-xl hidden z-50 transition">
+  <span id="toast-text"></span>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+// ── State ──────────────────────────────────
+let currentRole = 'newcomer';
+let currentDiscFilter = null;
+let currentOfficeFilter = 'all';
+let quizStep = 0;
+let quizScore = 0;
+
+// ── STATE ENGINE ─────────────────────────────────────────────────
+const RISE_KEY = 'rise_origins_v1';
+
+const PHASE_TASKS = {
+  0:[
+    { id:'profile_saved',    label:'Profil complété',             required:true  },
+    { id:'it_requested',     label:'Demande IT soumise',          required:true  },
+    { id:'signature_copied', label:'Signature email configurée',  required:false },
+  ],
+  1:[
+    { id:'welcome_read',  label:'Message manager lu',            required:true  },
+    { id:'desk_visited',  label:'Bureau et badge récupérés',     required:true  },
+  ],
+  2:[
+    { id:'org_viewed',  label:'Organigramme consulté',          required:true  },
+    { id:'disc_viewed', label:'Guide DISC consulté',            required:true  },
+  ],
+  3:[
+    { id:'quiz_done',      label:'Quiz IT complété',             required:true  },
+    { id:'apps_validated', label:'Accès applicatifs validés',    required:true  },
+  ],
+  4:[
+    { id:'checklist_8',   label:"8 tâches d'ancrage cochées",   required:true  },
+    { id:'feedback_sent', label:'Feedback J+30 envoyé',         required:false },
+  ],
+};
+
+const IT_PROVISION_ITEMS = [
+  { id:'laptop',     label:'MacBook Pro 14"',      icon:'💻' },
+  { id:'email',      label:'Adresse email Rise',   icon:'📧' },
+  { id:'m365',       label:'Microsoft 365',        icon:'☁️' },
+  { id:'badge',      label:'Badge accès bâtiment', icon:'🪪' },
+  { id:'phone',      label:'Téléphone pro',        icon:'📱' },
+  { id:'sharepoint', label:'SharePoint Rise',      icon:'📁' },
+  { id:'workday',    label:'Workday (SIRH)',        icon:'👤' },
+  { id:'vpn',        label:'Accès VPN',            icon:'🔐' },
+];
+
+function _defaultState() {
+  return {
+    user:{ firstName:'Sophie', lastName:'Martin', role:'Analyst Patrimoine', office:'lisbonne', startDate:'2025-05-19' },
+    tasks:{ 0:{}, 1:{}, 2:{}, 3:{}, 4:{} },
+    quiz:{ done:false, score:null, level:null, path:null },
+    checklist:{ pc:true, mail:true, contrat:true },
+    managerTasks:{ agenda:true, notif:true },
+    itProvision:{
+      'Sophie Martin': { laptop:'done',email:'done',m365:'done',badge:'pending',phone:'pending',sharepoint:'pending',workday:'pending',vpn:'pending' },
+      'Thomas Chabert':{ laptop:'done',email:'done',m365:'done',badge:'done',  phone:'done',   sharepoint:'done',   workday:'done',   vpn:'done'    },
+    },
+  };
+}
+
+let S = (function(){
+  try{
+    const r=localStorage.getItem(RISE_KEY);
+    if(r){
+      const p=JSON.parse(r), d=_defaultState();
+      return Object.assign(d,p,{
+        tasks:Object.assign({0:{},1:{},2:{},3:{},4:{}},p.tasks||{}),
+        checklist:Object.assign(d.checklist,p.checklist||{}),
+        managerTasks:Object.assign(d.managerTasks,p.managerTasks||{}),
+        itProvision:Object.assign(d.itProvision,p.itProvision||{}),
+      });
+    }
+  }catch(e){}
+  return _defaultState();
+})();
+
+function _save(){ try{ localStorage.setItem(RISE_KEY,JSON.stringify(S)); }catch(e){} }
+
+function _phasePct(ph){
+  const ts=PHASE_TASKS[ph]; if(!ts?.length) return 0;
+  return Math.round(ts.filter(t=>S.tasks[ph]?.[t.id]).length/ts.length*100);
+}
+function _overallPct(){
+  const all=Object.values(PHASE_TASKS).flat();
+  const done=Object.entries(PHASE_TASKS).reduce((n,[ph,ts])=>n+ts.filter(t=>S.tasks[ph]?.[t.id]).length,0);
+  return Math.round(done/all.length*100);
+}
+function _phaseUnlocked(ph){
+  if(ph===0||ph===4) return true;
+  const prev=PHASE_TASKS[ph-1]; if(!prev) return false;
+  return prev.filter(t=>t.required).every(t=>S.tasks[ph-1]?.[t.id]);
+}
+function _clDone(){ return Object.values(S.checklist||{}).filter(Boolean).length; }
+
+function completeTask(phase, taskId){
+  if(!S.tasks[phase]) S.tasks[phase]={};
+  if(S.tasks[phase][taskId]) return;
+  S.tasks[phase][taskId]=true; _save();
+  const task=PHASE_TASKS[phase]?.find(t=>t.id===taskId);
+  if(task) showToast('✅ '+task.label);
+  if(phase<4){
+    const next=phase+1;
+    const phNames=["L'Origine","L'Aube","Le Lever","L'Essor","L'Ancrage"];
+    if(_phaseUnlocked(next)) setTimeout(()=>showToast('🎉 Phase '+phNames[next]+' débloquée !'),1600);
+  }
+  updateDashboard();
+}
+
+function updateDashboard(){
+  const pct=_overallPct();
+  document.querySelectorAll('[data-overall-bar]').forEach(el=>el.style.width=pct+'%');
+  document.querySelectorAll('[data-overall-pct]').forEach(el=>el.textContent=pct+'%');
+  const phNames=["L'Origine","L'Aube","Le Lever","L'Essor","L'Ancrage"];
+  const active=[0,1,2,3,4].filter(ph=>_phaseUnlocked(ph)&&_phasePct(ph)<100).sort()[0]??4;
+  document.querySelectorAll('[data-phase-label]').forEach(el=>el.textContent='Phase '+(active+1)+' / 5 en cours — '+phNames[active]);
+  _renderPhaseTimeline();
+  document.querySelectorAll('[data-cl-count]').forEach(el=>el.textContent=_clDone()+'/'+checklist.length+' complétées');
+  if(S.quiz.done) document.querySelectorAll('[data-quiz-level]').forEach(el=>{ el.textContent=S.quiz.level||'✓'; el.className='text-xs font-medium text-anchor'; });
+  const sp=document.getElementById('sophie-progress-bar'); if(sp) sp.style.width=pct+'%';
+  const spPct=document.getElementById('sophie-progress-pct'); if(spPct) spPct.textContent=pct+'%';
+}
+
+function _renderPhaseTimeline(){
+  const tl=document.getElementById('phases-timeline'); if(!tl) return;
+  const emojis=['🌑','🌄','🌤️','🌞','⚓'];
+  const phNames=["L'Origine","L'Aube","Le Lever","L'Essor","L'Ancrage"];
+  const screens=['screen-phase0','screen-phase1','screen-phase2','screen-quiz','screen-newcomer-dashboard'];
+  const subs=[null,null,null,null,'ns-docs'];
+  const subtexts=[
+    "Espace créé · Mail bienvenue · Agenda Jour J bloqué",
+    "Message manager lu · Visite bureaux · Signature email",
+    "Organigramme · Profils DISC · Guide communication",
+    "Quiz IT · Formation sur mesure · Accès applicatifs",
+    "Checklist permanente · Documents Rise",
+  ];
+  tl.innerHTML=[0,1,2,3,4].map(ph=>{
+    const pct=_phasePct(ph), unlocked=_phaseUnlocked(ph), done=pct===100;
+    const clk=unlocked?(subs[ph]?`onclick="showSubscreen('${subs[ph]}')"`: `onclick="showScreen('${screens[ph]}')"`):'';
+    let borderC,bgExtra,badge,arrow;
+    if(done){ borderC='border-anchor'; bgExtra=''; badge='<span style="background:rgba(16,185,129,0.15);color:#6EE7B7;font-size:11px;padding:2px 10px;border-radius:999px">✓ Terminé</span>'; arrow='<span class="text-anchor text-lg">✓</span>'; }
+    else if(unlocked){ borderC='border-aurora'; bgExtra=''; badge='<span style="background:rgba(123,94,245,0.15);color:#A78BFA;font-size:11px;padding:2px 10px;border-radius:999px">⟳ En cours · '+pct+'%</span>'; arrow='<span class="text-aurora text-lg">→</span>'; }
+    else{ borderC='border-[#1A1830]'; bgExtra='opacity-50'; badge='<span style="color:rgba(255,255,255,0.25);font-size:11px;padding:2px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:999px">🔒 Verrouillé</span>'; arrow='<span class="text-white/20 text-lg">→</span>'; }
+    return `<div ${clk} class="${unlocked?'cursor-pointer card-hover':''}">
+      <div class="bg-[#0F0E1A] ${bgExtra} rounded-2xl p-4 border-l-4 ${borderC} flex items-center gap-4">
+        <div class="phase-dot ${done?'bg-anchor':unlocked?'bg-aurora':'bg-[#1A1830]'} ${done||unlocked?'text-white':'text-white/25'}">${emojis[ph]}</div>
+        <div class="flex-grow">
+          <div class="flex items-center gap-2 mb-0.5"><span class="font-medium text-sm ${unlocked?'text-white/90':'text-white/30'}">${phNames[ph]}</span>${badge}</div>
+          <p class="text-white/40 text-xs">${subtexts[ph]}</p>
+        </div>${arrow}
+      </div></div>`;
+  }).join('');
+}
+
+// ── Shims (keep render functions using these vars working) ───────
+const checklistState = new Proxy({},{
+  get(_,k){ return S.checklist[k]; },
+  set(_,k,v){ S.checklist[k]=v; _save(); return true; }
+});
+const managerChecklistState = new Proxy({},{
+  get(_,k){ return S.managerTasks[k]; },
+  set(_,k,v){ S.managerTasks[k]=v; _save(); return true; }
+});
+
+// ── Data ────────────────────────────────────
+
+const people = [
+  { id:1, name:'Antoine Lemaire', role:'Head of Wealth', office:'lisbonne', disc:'D', initials:'AL', emoji:'🇫🇷', desc:'Antoine va droit au but — il n\'aime pas les réunions sans décision. Pour travailler efficacement avec lui : arrivez avec une recommandation claire, pas seulement un constat. Il valorise l\'initiative et récompense l\'audace bien préparée. C\'est lui qui a fondé la practice Wealth de Lisbonne il y a 8 ans.' },
+  { id:2, name:'Clara Santos',    role:'Senior Analyst', office:'lisbonne', disc:'I', initials:'CS', emoji:'🇵🇹', desc:'Clara est l\'énergie du bureau de Lisbonne. Elle adore collaborer, partager des idées et créer des connexions entre les gens. Pour travailler avec elle : laissez de la place à l\'enthousiasme, elle pense à voix haute. Référente non-officielle pour tout ce qui touche à la culture Rise et aux clients portugais.' },
+  { id:3, name:'Marc Villeneuve', role:'Director',       office:'cdebons',  disc:'D', initials:'MV', emoji:'🇨🇭', desc:'Marc est le gardien des standards Rise. Exigeant mais juste, il attend de chacun qu\'il se dépasse. Pour l\'approcher : soyez ambitieux dans vos propositions, montrez que vous avez réfléchi aux implications long terme. Il a fondé Rise en 1998 et porte encore la vision de l\'entreprise au quotidien.' },
+  { id:4, name:'Ingrid Müller',   role:'Operations',     office:'cdebons',  disc:'S', initials:'IM', emoji:'🇩🇪', desc:'Ingrid est le pilier opérationnel de Charles de Bons. Calme, méthodique, elle a une mémoire institutionnelle précieuse. Pour collaborer avec elle : anticipez, donnez-lui le temps de réfléchir, ne la mettez jamais sous pression en réunion. Elle connaît chaque procédure Rise par cœur.' },
+  { id:5, name:'Léa Fontaine',    role:'Legal & Compliance', office:'luxembourg', disc:'C', initials:'LF', emoji:'🇫🇷', desc:'Léa est la conscience juridique de Rise. Elle lit tout, vérifie tout, et a raison 95% du temps sur les points de détail. Pour travailler avec elle : documentez vos demandes par écrit, citez vos sources, ne généralisez pas. Elle est aussi la personne la plus utile à avoir de son côté en cas de dossier complexe.' },
+  { id:6, name:'David Chen',      role:'Finance & Reporting', office:'luxembourg', disc:'C', initials:'DC', emoji:'🇨🇳', desc:'David est l\'architecte des reportings clients Rise. Il construit des modèles financiers d\'une précision remarquable. Pour collaborer : soyez exact dans vos chiffres, il repère les approximations immédiatement. Très disponible pour partager ses outils et méthodes avec les nouveaux arrivants.' },
+  { id:7, name:'Sofia Costa',     role:'People & Culture', office:'lisbonne', disc:'S', initials:'SC', emoji:'🇵🇹', desc:'Sofia est votre première alliée chez Rise. Elle a conçu ce parcours d\'onboarding et s\'assure que chaque collaborateur se sente bien accueilli. N\'hésitez jamais à lui poser une question, même petite — c\'est littéralement sa mission. Elle organise aussi tous les moments de convivialité Rise.' },
+  { id:8, name:'Romain Duval',    role:'IT & Systems',   office:'lisbonne', disc:'C', initials:'RD', emoji:'🇫🇷', desc:'Romain gère l\'ensemble des systèmes Rise avec une rigueur à toute épreuve. Pour toute demande IT : ouvrez un ticket via Teams #support-it avec un maximum de détails — il sera plus rapide ainsi. Il a migré Rise vers Microsoft 365 en 2022 et connaît l\'environnement technique sur le bout des doigts.' },
+];
+
+const discLabel  = { D:'Dominant 🔴', I:'Influent 🟡', S:'Stable 🟢', C:'Consciencieux 🔵' };
+const discStyle  = {
+  D: { grad:'linear-gradient(135deg,#F87171,#EF4444)', bg:'rgba(248,113,113,0.12)', border:'rgba(248,113,113,0.35)', text:'#FCA5A5' },
+  I: { grad:'linear-gradient(135deg,#FBBF24,#F59E0B)', bg:'rgba(251,191,36,0.12)',  border:'rgba(251,191,36,0.35)',  text:'#FDE68A' },
+  S: { grad:'linear-gradient(135deg,#34D399,#10B981)', bg:'rgba(52,211,153,0.12)',   border:'rgba(52,211,153,0.35)',   text:'#6EE7B7' },
+  C: { grad:'linear-gradient(135deg,#60A5FA,#3B82F6)', bg:'rgba(96,165,250,0.12)',   border:'rgba(96,165,250,0.35)',   text:'#93C5FD' },
+};
+
+const discGuide = [
+  { disc:'D', title:'Avec un Dominant 🔴', tips:['Allez droit au but — une recommandation, pas une liste de constats', 'Parlez impact et résultats chiffrés, pas de processus', 'Préparez vos réunions : ils détestent les pertes de temps', 'Prenez des initiatives, montrez que vous agissez'] },
+  { disc:'I', title:'Avec un Influent 🟡', tips:['Commencez par créer un lien humain avant d\'entrer dans le vif', 'Laissez-les "penser à voix haute" sans les interrompre', 'Valorisez leurs idées et contributions publiquement', 'Proposez des formats collaboratifs plutôt qu\'unilatéraux'] },
+  { disc:'S', title:'Avec un Stable 🟢',   tips:['Annoncez les changements en avance — ils n\'aiment pas être surpris', 'Écoutez activement avant de proposer des solutions', 'Soyez constant dans votre comportement : fiabilité avant tout', 'Ne les mettez jamais sous pression en public'] },
+  { disc:'C', title:'Avec un Consciencieux 🔵', tips:['Envoyez l\'information par écrit avant la réunion', 'Appuyez vos arguments sur des données vérifiables', 'Respectez les procédures même quand ça semble lent', 'Acceptez que la réponse arrive après réflexion — c\'est bon signe'] },
+];
+
+const checklist = [
+  { id:'pc',       label:'PC configuré et prêt',                icon:'💻' },
+  { id:'mail',     label:'Adresse mail active et configurée',    icon:'📧' },
+  { id:'sig',      label:'Signature email configurée',           icon:'✍️' },
+  { id:'phone',    label:'Téléphone / numéro pro attribué',      icon:'📱' },
+  { id:'contrat',  label:'Contrat et NDA signés',                icon:'📄' },
+  { id:'acces',    label:'Accès aux applications activés',       icon:'🔐' },
+  { id:'video',    label:'Vidéo Rise visionnée',                 icon:'🎬' },
+  { id:'orgchart', label:'Organigramme consulté',                icon:'👥' },
+  { id:'formation',label:'Formation IT complétée',               icon:'🎓' },
+  { id:'reseaux',  label:'Réseaux sociaux Rise suivis',          icon:'📲' },
+];
+
+const managerChecklist = [
+  { id:'desk',      label:'Préparer le bureau et l\'espace de travail' },
+  { id:'badge',     label:'Commander le badge d\'accès' },
+  { id:'agenda',    label:'Bloquer l\'agenda Jour J (09h–11h)' },
+  { id:'notif',     label:'Notifier l\'équipe de l\'arrivée' },
+  { id:'reunion',   label:'Planifier le déjeuner d\'équipe Jour J' },
+  { id:'objectifs', label:'Préparer les objectifs des 30 premiers jours' },
+];
+
+const quizQuestions = [
+  {
+    q: 'Comment créez-vous un nouveau document sur SharePoint ?',
+    opts: ['Via l\'application bureau Office', 'Via SharePoint en ligne → Nouveau → Document', 'En envoyant un email à IT', 'Via Teams uniquement'],
+    correct: 1, level: 'base'
+  },
+  {
+    q: 'Quelle est la méthode recommandée pour partager un fichier Rise avec un client externe ?',
+    opts: ['Envoyer en pièce jointe par email', 'Partager le lien SharePoint avec droits limités', 'Uploader sur WeTransfer', 'Copier sur une clé USB'],
+    correct: 1, level: 'base'
+  },
+  {
+    q: 'Vous recevez un email suspect demandant vos identifiants Rise. Que faites-vous ?',
+    opts: ['Vous répondez avec vos identifiants', 'Vous ignorez et supprimez', 'Vous transférez à IT Security + signalez dans Outlook', 'Vous changez votre mot de passe uniquement'],
+    correct: 2, level: 'securite'
+  },
+  {
+    q: 'Quel outil Rise utilisez-vous pour les appels vidéo internes ?',
+    opts: ['Zoom', 'Microsoft Teams', 'Google Meet', 'FaceTime'],
+    correct: 1, level: 'outils'
+  },
+  {
+    q: 'Combien de temps conservez-vous les documents clients selon la politique Rise ?',
+    opts: ['3 ans', '5 ans', '10 ans', '7 ans (conformité règlementaire)'],
+    correct: 3, level: 'compliance'
+  }
+];
+
+const chatResponses = {
+  'signature mail': '✉️ Votre signature Rise est générée automatiquement dans l\'app — rendez-vous dans **Phase 1 → L\'Aube** puis cliquez "Copier la signature".\n\nEnsuite dans Outlook : **Fichier → Options → Courrier → Signatures → Nouvelle**. Collez votre signature et définissez-la par défaut pour les nouveaux messages et les réponses.\n\nSi vous avez un doute, Romain Duval (IT) peut vous aider : r.duval@rise.com',
+  'manager': '👤 Votre manager est **Antoine Lemaire**, Head of Wealth Management, basé à Lisbonne. C\'est lui qui a piloté votre recrutement et qui sera votre boussole pendant vos premières semaines.\n\nSon bureau : 3ème étage, open space Wealth, à côté de la salle Tagus.\nEmail : a.lemaire@rise.com · Teams : @Antoine Lemaire\n\nIl a bloqué votre Jour J de 9h à 11h pour un accueil personnalisé.',
+  'applications': '💻 Voici vos accès Rise et leur statut :\n\n✅ **Microsoft 365** — Outlook, Teams, SharePoint, OneDrive. Connectez-vous via office.com avec votre email Rise.\n✅ **Microsoft Teams** — canal principal pour la communication interne. Rejoignez les équipes "Wealth Lisbonne" et "Rise Global".\n⏳ **Workday** (SIRH) — activation sous 48h. Pour congés, notes de frais et fiches de paie.\n⏳ **SharePoint Rise** — bibliothèque de documents internes. Lien : sharepoint.rise.com\n\nPour tout problème : ouvrez un ticket IT via Teams → canal #support-it ou écrivez à it@rise.com',
+  'family office': '🏦 Rise a été fondé en 1998 à Charles de Bons (Valais) par une famille d\'entrepreneurs souhaitant gérer leur propre patrimoine avec la même exigence qu\'une grande banque — mais sans les conflits d\'intérêt.\n\nAujourd\'hui, nous accompagnons une vingtaine de familles patrimoniales dans 4 domaines :\n\n1. **Wealth Planning** — structuration juridique, optimisation fiscale, préparation de la transmission\n2. **Asset Management** — allocation d\'actifs sur mesure, sélection de gérants, reporting consolidé\n3. **Philanthropy Advisory** — fondations, impact investing, stratégie de don\n4. **Family Governance** — conseil aux organes familiaux, pactes d\'actionnaires, éducation financière\n\nNotre force : l\'indépendance totale. Rise ne perçoit aucune rétrocession.',
+  'default': '💡 Je recherche dans la base de connaissances Rise...\n\nJe n\'ai pas encore de réponse précise sur ce sujet, mais voici comment trouver rapidement :\n\n• **Organigramme** → identifiez la bonne personne selon le sujet\n• **SharePoint Rise** → toute la documentation interne\n• **Antoine Lemaire** → votre manager pour toute question métier\n• **Sofia Costa (RH)** → s.costa@rise.com pour tout ce qui concerne votre contrat, vos avantages ou votre intégration\n\nJe transmets votre question à l\'équipe RH — vous recevrez une réponse sous 24h. 🙏'
+};
+
+const agenda = [
+  { day:'Lun 19 — Jour J', events:[
+    { time:'09:00', label:'☕ Accueil & petit-déjeuner avec Antoine Lemaire — Salle Tagus', type:'aurora' },
+    { time:'10:00', label:'👥 Tour de l\'équipe Wealth — rencontre informelle bureau Lisbonne', type:'gold' },
+    { time:'11:30', label:'🏢 Visite des locaux & remise du badge d\'accès (RDC)', type:'gold' },
+    { time:'14:00', label:'💻 Setup poste de travail avec Romain Duval (IT) — Bureau 3B', type:'anchor' },
+    { time:'16:30', label:'🎬 Visionner la vidéo de présentation Rise en autonomie', type:'sun' },
+  ]},
+  { day:'Mar 20', events:[
+    { time:'09:30', label:'🏦 Immersion Family Office — histoire, valeurs, positionnement Rise', type:'gold' },
+    { time:'11:00', label:'🧭 Point 1-to-1 avec Antoine Lemaire — objectifs 30 premiers jours', type:'aurora' },
+    { time:'14:00', label:'📋 Lecture des procédures internes & politique de confidentialité', type:'anchor' },
+  ]},
+  { day:'Mer 21', events:[
+    { time:'09:00', label:'👥 Découverte de l\'organigramme Rise — La Boussole', type:'gold' },
+    { time:'10:30', label:'🤖 Quiz IT adaptatif — évaluation niveau & parcours formation', type:'sun' },
+    { time:'14:00', label:'📱 Formation Microsoft 365 avec Romain : Teams, SharePoint, OneDrive', type:'anchor' },
+  ]},
+  { day:'Jeu 22', events:[
+    { time:'09:00', label:'👁️ Shadow d\'Antoine sur un call client (observation uniquement)', type:'night' },
+    { time:'14:00', label:'📄 Lecture dossier client type — structure et format des reportings Rise', type:'gold' },
+    { time:'16:00', label:'💬 Première session Le Phare — explorer la base de connaissances', type:'sun' },
+  ]},
+  { day:'Ven 23', events:[
+    { time:'10:00', label:'✅ Revue de la checklist d\'intégration — ce qui est fait, ce qui reste', type:'anchor' },
+    { time:'11:00', label:'🧭 Bilan semaine 1 avec Antoine — ressentis, questions ouvertes', type:'aurora' },
+    { time:'13:00', label:'🍽️ Déjeuner d\'équipe — tradition Rise chaque vendredi !', type:'gold' },
+  ]},
+];
+
+const typeColors = { aurora:'border-aurora/40 text-aurora', gold:'border-gold/40 text-gold', anchor:'border-anchor/40 text-anchor', sun:'border-sun/40 text-sun', night:'border-white/20 text-white/60' };
+
+// ── Navigation ──────────────────────────────
+
+function setRole(r) { currentRole = r; }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('active');
+    // Auto-complete visit tasks
+    if (id === 'screen-phase1') completeTask(1,'welcome_read');
+    if (id === 'screen-phase2') { completeTask(2,'org_viewed'); setTimeout(()=>completeTask(2,'disc_viewed'),3000); }
+    el.scrollTop = 0;
+    window.scrollTo(0,0);
+  }
+  // Init screens on first show
+  if (id === 'screen-phase2')             renderPeople();
+  if (id === 'screen-newcomer-dashboard') { renderAgenda(); updateDashboard(); }
+  if (id === 'screen-quiz')               initQuiz();
+  if (id === 'screen-it')                 renderITProvisioning();
+}
+
+function showSubscreen(id) {
+  // hide all newcomer subscreens
+  document.querySelectorAll('.ns-newcomer').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id)?.classList.remove('hidden');
+
+  // Update nav tabs
+  document.querySelectorAll('.nav-item[data-ns="newcomer"]').forEach(b => b.classList.remove('active', 'text-aurora'));
+  const clicked = Array.from(document.querySelectorAll('.nav-item[data-ns="newcomer"]')).find(b => {
+    const onclick = b.getAttribute('onclick');
+    return onclick && onclick.includes(id);
+  });
+  if (clicked) { clicked.classList.add('active'); }
+
+  // Special cases
+  if (id === 'ns-contacts') { showScreen('screen-phase2'); return; }
+  if (id === 'ns-docs') renderChecklist();
+}
+
+// ── Modals ──────────────────────────────────
+
+function openModal(modalId, data) {
+  if (modalId === 'modal-person') {
+    const p = people.find(x => x.id === data);
+    if (!p) return;
+    const s = discStyle[p.disc];
+    document.getElementById('modal-person-content').innerHTML = `
+      <div class="text-center mb-5">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white mx-auto mb-3 shadow-lg" style="background:${s.grad}">${p.initials}</div>
+        <h2 class="font-serif text-xl" style="color:#1a1a1a">${p.name}</h2>
+        <p class="text-sm mt-1" style="color:rgba(240,238,255,0.5)">${p.role}</p>
+        <div class="flex items-center justify-center gap-2 mt-2">
+          <span class="disc-badge" style="background:${s.bg};border:1px solid ${s.border};color:${s.text};padding:3px 12px;border-radius:999px;font-size:12px;font-weight:600">${discLabel[p.disc]}</span>
+        </div>
+      </div>
+      <div class="rounded-2xl p-4 mb-4" style="background:#141322">
+        <h3 class="text-xs uppercase tracking-wider mb-2" style="color:rgba(240,238,255,0.5)">Comment communiquer</h3>
+        <p class="text-sm leading-relaxed" style="color:#444">${p.desc}</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="rounded-xl p-3" style="background:#141322"><p class="mb-1" style="color:rgba(240,238,255,0.5)">Bureau</p><p class="font-medium">${p.emoji} ${p.office === 'lisbonne' ? 'Lisbonne' : p.office === 'cdebons' ? 'Charles de Bons' : 'Luxembourg'}</p></div>
+        <div class="rounded-xl p-3" style="background:#141322"><p class="mb-1" style="color:rgba(240,238,255,0.5)">Email</p><p class="font-medium" style="color:#A78BFA">${p.name.split(' ')[0].toLowerCase()}.${p.name.split(' ')[1].toLowerCase()}@rise.com</p></div>
+      </div>
+      <button class="mt-4 w-full py-2.5 rounded-xl text-sm text-white" style="background:linear-gradient(135deg,#7B5EF5,#5B3FD4)" onclick="showToast('Message envoyé à ${p.name} !'); closeModal('modal-person')">✉️ Envoyer un message</button>
+    `;
+  }
+  document.getElementById(modalId)?.classList.remove('hidden');
+}
+
+function closeModal(id) {
+  document.getElementById(id)?.classList.add('hidden');
+}
+
+// ── Render: Agenda ───────────────────────────
+
+function renderAgenda() {
+  const container = document.getElementById('agenda-days');
+  if (!container) return;
+  container.innerHTML = agenda.map(d => `
+    <div class="p-4 border-b border-gray-50 last:border-0">
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">${d.day}</p>
+      <div class="space-y-1.5">
+        ${d.events.map(e => `
+          <div class="flex items-center gap-3 p-2 rounded-xl border ${typeColors[e.type]}">
+            <span class="text-xs font-mono opacity-70">${e.time}</span>
+            <span class="text-xs">${e.label}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Render: People DISC ──────────────────────
+
+function renderPeople() {
+  const query = (document.getElementById('people-search')?.value || '').toLowerCase();
+  const grid = document.getElementById('people-grid');
+  if (!grid) return;
+
+  const filtered = people.filter(p => {
+    const matchDisc   = !currentDiscFilter || p.disc === currentDiscFilter;
+    const matchOffice = currentOfficeFilter === 'all' || p.office === currentOfficeFilter;
+    const matchSearch = !query || p.name.toLowerCase().includes(query) || p.role.toLowerCase().includes(query);
+    return matchDisc && matchOffice && matchSearch;
+  });
+
+  grid.innerHTML = filtered.length === 0
+    ? `<div class="col-span-3 text-center py-10 text-sm" style="color:#d4b896">Aucun collaborateur trouvé</div>`
+    : filtered.map(p => {
+      const s = discStyle[p.disc];
+      return `
+        <button onclick="openModal('modal-person', ${p.id})" class="card-hover rounded-2xl p-4 text-center shadow-sm" style="background:#0F0E1A">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-bold text-white mx-auto mb-2 shadow-sm" style="background:${s.grad}">${p.initials}</div>
+          <p class="font-medium text-sm leading-tight" style="color:#1a1a1a">${p.name}</p>
+          <p class="text-xs mt-0.5 leading-tight" style="color:rgba(240,238,255,0.5)">${p.role}</p>
+          <div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style="background:${s.bg};border:1px solid ${s.border};color:${s.text}">
+            ${p.disc}
+          </div>
+        </button>`;
+    }).join('');
+
+  // Render DISC guide
+  const guide = document.getElementById('disc-guide');
+  if (guide) {
+    guide.innerHTML = discGuide.map(g => {
+      const s = discStyle[g.disc];
+      return `
+        <div class="rounded-xl p-3" style="background:${s.bg};border:1px solid ${s.border}">
+          <p class="font-semibold text-sm mb-1.5" style="color:${s.text}">${g.title}</p>
+          <ul class="space-y-1">
+            ${g.tips.map(t => `<li class="text-xs flex gap-2" style="color:#555"><span style="color:${s.text}">•</span>${t}</li>`).join('')}
+          </ul>
+        </div>`;
+    }).join('');
+  }
+}
+
+function filterDISC(disc) {
+  currentDiscFilter = currentDiscFilter === disc ? null : disc;
+  document.querySelectorAll('.disc-filter').forEach(b => {
+    const isActive = b.dataset.disc === currentDiscFilter;
+    b.style.opacity = currentDiscFilter && !isActive ? '0.5' : '1';
+  });
+  renderPeople();
+}
+
+function filterOffice(office) {
+  currentOfficeFilter = office;
+  document.querySelectorAll('.office-filter').forEach(b => {
+    b.className = b.dataset.office === office
+      ? 'office-filter bg-night text-white px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap'
+      : 'office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap';
+  });
+  renderPeople();
+}
+
+// ── Render: Checklist ────────────────────────
+
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  if (!container) return;
+
+  const done = Object.values(checklistState).filter(Boolean).length;
+  container.innerHTML = `
+    <div class="bg-gradient-to-r from-anchor to-green-500 rounded-3xl p-5 mb-5 text-white">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="font-semibold">⚓ L'Ancrage — Checklist</h2>
+        <span class="text-white/80 text-sm font-bold">${done}/${checklist.length}</span>
+      </div>
+      <div class="h-2 bg-[#0F0E1A]/20 rounded-full overflow-hidden">
+        <div class="h-full bg-aurora rounded-full progress-fill" style="width:${Math.round(done/checklist.length*100)}%"></div>
+      </div>
+      ${done === checklist.length ? '<p class="text-white/80 text-xs mt-2">🎉 Checklist complète ! Votre manager a été notifié.</p>' : ''}
+    </div>
+    <div class="bg-[#0F0E1A] rounded-3xl p-5 shadow-sm space-y-2">
+      ${checklist.map(item => `
+        <div class="check-item flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1830] transition cursor-pointer ${checklistState[item.id] ? 'done' : ''}" onclick="toggleCheck('${item.id}')">
+          <div class="w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition ${checklistState[item.id] ? 'bg-anchor border-anchor' : 'border-gray-300'}">
+            ${checklistState[item.id] ? '<span class="text-white text-xs">✓</span>' : ''}
+          </div>
+          <span class="text-lg">${item.icon}</span>
+          <span class="check-label text-sm text-gray-700">${item.label}</span>
+          ${checklistState[item.id] ? '<span class="ml-auto text-xs text-anchor">✓ Manager notifié</span>' : ''}
+        </div>
+      `).join('')}
+    </div>
+    <div class="mt-5 bg-[#0F0E1A] rounded-3xl p-5 shadow-sm">
+      <h3 class="font-semibold text-gray-800 mb-3">📎 Documents Rise</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1830] transition cursor-pointer">
+          <div class="w-10 h-10 rounded-xl bg-aurora/10 flex items-center justify-center text-xl">📋</div>
+          <div><p class="text-sm font-medium text-gray-700">Template email professionnel</p><p class="text-xs text-gray-400">DOCX · 45 Ko</p></div>
+          <span class="ml-auto text-gray-300">↓</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1830] transition cursor-pointer">
+          <div class="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-xl">📜</div>
+          <div><p class="text-sm font-medium text-gray-700">Guide pratique IT Rise</p><p class="text-xs text-gray-400">PDF · 2.3 Mo</p></div>
+          <span class="ml-auto text-gray-300">↓</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1830] transition cursor-pointer">
+          <div class="w-10 h-10 rounded-xl bg-anchor/10 flex items-center justify-center text-xl">📌</div>
+          <div><p class="text-sm font-medium text-gray-700">Politique de sécurité informatique</p><p class="text-xs text-gray-400">PDF · 890 Ko</p></div>
+          <span class="ml-auto text-gray-300">↓</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCheck(id) {
+  checklistState[id] = !checklistState[id];
+  if (checklistState[id]) showToast('✅ Tâche cochée — Manager notifié automatiquement');
+  renderChecklist();
+  if (_clDone() >= 8) completeTask(4,'checklist_8');
+  updateDashboard();
+}
+
+// ── Render: Manager checklist ─────────────────
+
+function renderManagerChecklist() {
+  const container = document.getElementById('manager-checklist');
+  if (!container) return;
+  container.innerHTML = managerChecklist.map(item => `
+    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#1A1830] transition cursor-pointer" onclick="toggleManagerCheck('${item.id}', this)">
+      <div class="w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition ${managerChecklistState[item.id] ? 'bg-gold border-gold' : 'border-gray-300'}">
+        ${managerChecklistState[item.id] ? '<span class="text-white text-xs">✓</span>' : ''}
+      </div>
+      <span class="text-sm text-gray-700 ${managerChecklistState[item.id] ? 'line-through text-gray-400' : ''}">${item.label}</span>
+    </div>
+  `).join('');
+}
+
+function toggleManagerCheck(id) {
+  managerChecklistState[id] = !managerChecklistState[id];
+  renderManagerChecklist();
+}
+
+// ── Quiz ─────────────────────────────────────
+
+function initQuiz() {
+  quizStep = 0;
+  quizScore = 0;
+  renderQuizStep();
+}
+
+function renderQuizStep() {
+  const content = document.getElementById('quiz-content');
+  const progress = document.getElementById('quiz-progress');
+  const counter  = document.getElementById('quiz-counter');
+  if (!content) return;
+
+  const pct = Math.round(quizStep / quizQuestions.length * 100);
+  if (progress) progress.style.width = pct + '%';
+  if (counter)  counter.textContent = `${quizStep} / ${quizQuestions.length}`;
+
+  if (quizStep >= quizQuestions.length) {
+    const level = quizScore >= 4 ? 'Avancé' : quizScore >= 2 ? 'Intermédiaire' : 'Débutant';
+    const color  = quizScore >= 4 ? 'text-anchor' : quizScore >= 2 ? 'text-aurora' : 'text-disc-red';
+    const prog   = quizScore >= 4 ? 'Format Avancé — Documentation technique + accès direct' : 'Format Simple — Vidéos courtes + fiches pratiques';
+    // Save quiz results to state
+    S.quiz = { done:true, score:quizScore, level, path:prog }; _save();
+    completeTask(3,'quiz_done');
+    content.innerHTML = `
+      <div class="text-center py-8">
+        <div class="text-6xl mb-4">${quizScore >= 4 ? '🏆' : quizScore >= 2 ? '📚' : '🌱'}</div>
+        <h2 class="font-serif text-2xl text-gray-800 mb-2">Quiz terminé !</h2>
+        <p class="text-gray-400 text-sm mb-6">Score : ${quizScore} / ${quizQuestions.length}</p>
+        <div class="bg-[#0F0E1A] rounded-3xl p-6 text-left shadow-sm mb-5">
+          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Votre niveau IT</p>
+          <p class="font-serif text-2xl ${color} font-semibold mb-3">${level}</p>
+          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Parcours recommandé</p>
+          <p class="text-sm text-gray-700">${prog}</p>
+        </div>
+        <div class="bg-anchor/5 border border-anchor/20 rounded-2xl p-4 text-left mb-5">
+          <p class="text-xs font-medium text-anchor">📬 Résultats transmis à :</p>
+          <p class="text-xs text-gray-500 mt-1">✓ Votre manager (Antoine Lemaire)<br>✓ Équipe IT (Marie Dupont)</p>
+        </div>
+        <button onclick="showScreen('screen-newcomer-dashboard')" class="w-full bg-night text-white py-3 rounded-xl text-sm font-medium">Retour au tableau de bord →</button>
+      </div>
+    `;
+    if (progress) progress.style.width = '100%';
+    if (counter)  counter.textContent = `${quizQuestions.length} / ${quizQuestions.length}`;
+    return;
+  }
+
+  const q = quizQuestions[quizStep];
+  content.innerHTML = `
+    <div>
+      <div class="bg-[#0F0E1A] rounded-3xl p-5 shadow-sm mb-4">
+        <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">Question ${quizStep + 1} · ${q.level}</p>
+        <p class="font-medium text-gray-800 text-base leading-relaxed">${q.q}</p>
+      </div>
+      <div class="space-y-3" id="quiz-opts">
+        ${q.opts.map((opt, i) => `
+          <div class="quiz-opt" onclick="selectAnswer(${i})">
+            <div class="flex items-center gap-3">
+              <div class="w-7 h-7 rounded-full border-2 border-[#2a2450] flex items-center justify-center text-sm font-medium text-gray-400 flex-shrink-0">${String.fromCharCode(65+i)}</div>
+              <span class="text-sm text-gray-700">${opt}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function selectAnswer(idx) {
+  const q = quizQuestions[quizStep];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((opt, i) => {
+    opt.onclick = null;
+    if (i === q.correct) opt.classList.add('correct');
+    else if (i === idx && idx !== q.correct) opt.classList.add('wrong');
+  });
+  if (idx === q.correct) quizScore++;
+  setTimeout(() => { quizStep++; renderQuizStep(); }, 1200);
+}
+
+// ── Chatbot ────────────────────────────────────
+
+let _chatBusy = false;
+function sendChat() {
+  if (_chatBusy) return;
+  const input = document.getElementById('chat-input');
+  if (!input || !input.value.trim()) return;
+  _chatBusy = true;
+  const val = input.value.trim();
+  input.value = '';
+  appendUserMessage(val);
+  setTimeout(() => { appendBotMessage(getBotResponse(val)); _chatBusy = false; }, 800);
+}
+
+function handleChatKeypress(e) {
+  if (e.key === 'Enter') { e.preventDefault(); sendChat(); }
+}
+
+function sendQuickReply(text) {
+  document.getElementById('quick-replies')?.remove();
+  appendUserMessage(text);
+  setTimeout(() => appendBotMessage(getBotResponse(text)), 800);
+}
+
+function appendUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'flex justify-end';
+  div.innerHTML = `<div class="chat-bubble chat-user">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendBotMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'flex items-end gap-2';
+  div.innerHTML = `
+    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-aurora to-gold flex-shrink-0 flex items-center justify-center text-sm">🏮</div>
+    <div class="chat-bubble chat-bot">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function getBotResponse(input) {
+  const lower = input.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+  // ── Recherche par nom de collaborateur ──
+  const match = people.find(p => {
+    const fullName = (p.name).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const parts = fullName.split(' ');
+    return parts.some(part => lower.includes(part) && part.length > 3);
+  });
+  if (match) {
+    const s = discStyle[match.disc];
+    const bureau = match.office === 'lisbonne' ? '🇵🇹 Lisbonne' : match.office === 'cdebons' ? '🇨🇭 Charles de Bons' : '🇱🇺 Luxembourg';
+    const email = `${match.name.split(' ')[0].toLowerCase()}.${match.name.split(' ')[1].toLowerCase()}@rise.com`;
+    return `👤 **${match.name}** — ${match.role}\n\n📍 Bureau : ${bureau}\n✉️ Email : ${email}\n🧠 Profil DISC : **${discLabel[match.disc]}**\n\n${match.desc}\n\nVous pouvez aussi retrouver ${match.name.split(' ')[0]} dans **La Boussole** (onglet Contacts) pour voir son profil complet.`;
+  }
+
+  // ── Mots-clés thématiques ──
+  if (lower.includes('signature') || lower.includes('mail') || lower.includes('email')) return chatResponses['signature mail'];
+  if (lower.includes('manager') || lower.includes('antoine') || lower.includes('responsable') || lower.includes('chef')) return chatResponses['manager'];
+  if (lower.includes('application') || lower.includes('outil') || lower.includes('logiciel') || lower.includes('appli') || lower.includes('teams') || lower.includes('sharepoint') || lower.includes('outlook') || lower.includes('microsoft')) return chatResponses['applications'];
+  if (lower.includes('family') || lower.includes('office') || lower.includes('metier') || lower.includes('patrimoine') || lower.includes('client') || lower.includes('wealth')) return chatResponses['family office'];
+
+  if (lower.includes('conge') || lower.includes('vacance') || lower.includes('absence') || lower.includes('rtt'))
+    return '🏖️ Pour toute demande de congés, utilisez **Workday** (SIRH). Votre accès sera actif sous 48h.\n\nLa politique Rise : 25 jours de congés payés + RTT selon votre contrat. Les demandes doivent être soumises avec minimum **2 semaines d\'avance** et validées par Antoine Lemaire.\n\nPour toute question sur votre solde ou vos droits : s.costa@rise.com (Sofia Costa, RH).';
+
+  if (lower.includes('salaire') || lower.includes('paie') || lower.includes('remuneration') || lower.includes('fiche'))
+    return '💰 Vos fiches de paie sont disponibles sur **Workday** chaque fin de mois. La paie est versée le **dernier jour ouvré du mois**.\n\nPour toute question sur votre rémunération, mutuelle ou avantages : contactez Sofia Costa en RH → s.costa@rise.com ou Teams @Sofia Costa.';
+
+  if (lower.includes('bureau') || lower.includes('lisbonne') || lower.includes('luxembourg') || lower.includes('charles') || lower.includes('bons') || lower.includes('adresse') || lower.includes('locaux'))
+    return '📍 Rise dispose de 3 bureaux :\n\n🇵🇹 **Lisbonne** — Rua Augusta, 12 · Baixa-Chiado · 7ème étage\n🇨🇭 **Charles de Bons** — Route de Verbier, 4 · Valais · Siège historique\n🇱🇺 **Luxembourg** — 12 rue Jean Engling · Kirchberg · Hub financier\n\nPour les accès, badges et salles de réunion : contactez Ingrid Müller (Ops) ou Romain Duval (IT).';
+
+  if (lower.includes('formation') || lower.includes('apprendre') || lower.includes('training') || lower.includes('quiz'))
+    return '🎓 Votre parcours de formation est personnalisé selon votre niveau IT.\n\nÉtape 1 : **Quiz IT adaptatif** (IA Knowledge → 15 min)\nÉtape 2 : Attribution automatique du parcours :\n• **Format Simple** — vidéos courtes + fiches pratiques\n• **Format Avancé** — documentation technique + accès direct\n\nLes résultats sont partagés avec Antoine Lemaire et l\'équipe IT. Rendez-vous dans l\'onglet **IA Knowledge** pour commencer.';
+
+  if (lower.includes('disc') || lower.includes('profil') || lower.includes('personnalite') || lower.includes('communication') || lower.includes('collègue') || lower.includes('equipe'))
+    return '🧠 **Les profils DISC Rise** permettent de mieux se connaître et de mieux collaborer.\n\n🔴 **Dominant** — Direct, orienté résultats, va à l\'essentiel\n🟡 **Influent** — Enthousiaste, créatif, aime les échanges\n🟢 **Stable** — Patient, à l\'écoute, besoin de stabilité\n🔵 **Consciencieux** — Précis, analytique, attaché aux procédures\n\nRetrouvez le profil de chaque collaborateur dans **La Boussole** (onglet Contacts), avec le guide de communication adapté à chaque profil.';
+
+  return chatResponses['default'];
+}
+
+// ── Signature ──────────────────────────────────
+
+function copySignature() {
+  const sig = document.getElementById('email-sig');
+  if (!sig) return;
+  navigator.clipboard?.writeText(sig.innerText).catch(() => {});
+  document.getElementById('sig-copied')?.classList.remove('hidden');
+  showToast('✉️ Signature copiée !');
+  setTimeout(() => document.getElementById('sig-copied')?.classList.add('hidden'), 3000);
+  completeTask(0,'signature_copied');
+}
+
+function saveProfile() {
+  const fn = document.getElementById('p-firstname')?.value?.trim();
+  const ln = document.getElementById('p-lastname')?.value?.trim();
+  const role = document.getElementById('p-role')?.value?.trim();
+  const office = document.getElementById('p-office')?.value;
+  if (fn) S.user.firstName = fn;
+  if (ln) S.user.lastName  = ln;
+  if (role) S.user.role    = role;
+  if (office) S.user.office = office;
+  _save();
+  completeTask(0,'profile_saved');
+}
+
+function submitITRequest() {
+  completeTask(0,'it_requested');
+  showToast('📨 Demande IT transmise à Romain Duval');
+}
+
+function validateApps() {
+  completeTask(3,'apps_validated');
+}
+
+function sendFeedback() {
+  completeTask(4,'feedback_sent');
+  showToast('💬 Feedback envoyé à Sofia Costa (RH)');
+}
+
+function renderITProvisioning() {
+  const container = document.getElementById('it-provision-container');
+  if (!container) return;
+  const newcomers = Object.keys(S.itProvision);
+  container.innerHTML = newcomers.map(name => {
+    const prov = S.itProvision[name];
+    const doneCount = IT_PROVISION_ITEMS.filter(i => prov[i.id] === 'done').length;
+    const pct = Math.round(doneCount / IT_PROVISION_ITEMS.length * 100);
+    return `
+      <div class="bg-[#0F0E1A] rounded-3xl p-5 shadow-sm mb-4">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="font-semibold text-white text-sm">${name}</h3>
+            <p class="text-white/40 text-xs">${doneCount}/${IT_PROVISION_ITEMS.length} accès configurés</p>
+          </div>
+          <div class="text-right">
+            <span class="text-aurora font-bold text-lg">${pct}%</span>
+          </div>
+        </div>
+        <div class="h-1.5 bg-[#1A1830] rounded-full mb-4 overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-aurora to-anchor rounded-full transition-all" style="width:${pct}%"></div>
+        </div>
+        <div class="space-y-2">
+          ${IT_PROVISION_ITEMS.map(item => {
+            const status = prov[item.id] || 'pending';
+            const isDone = status === 'done';
+            return `
+              <div class="flex items-center justify-between p-3 rounded-xl transition cursor-pointer hover:bg-[#1A1830]"
+                   onclick="toggleProvision('${name}','${item.id}')">
+                <div class="flex items-center gap-3">
+                  <span class="text-base">${item.icon}</span>
+                  <span class="text-sm ${isDone ? 'text-white/60 line-through' : 'text-white/90'}">${item.label}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  ${isDone
+                    ? '<span style="background:rgba(16,185,129,0.15);color:#6EE7B7;font-size:11px;padding:2px 10px;border-radius:999px">✓ Actif</span>'
+                    : '<span style="background:rgba(251,191,36,0.12);color:#FDE68A;font-size:11px;padding:2px 10px;border-radius:999px">En attente</span>'
+                  }
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }).join('');
+  // update stats
+  const totalDone = newcomers.reduce((n,nm) => n + IT_PROVISION_ITEMS.filter(i => S.itProvision[nm][i.id]==='done').length, 0);
+  const totalItems = newcomers.length * IT_PROVISION_ITEMS.length;
+  const pending = totalItems - totalDone;
+  const elDone = document.getElementById('it-stat-done'); if(elDone) elDone.textContent = totalDone;
+  const elPend = document.getElementById('it-stat-pending'); if(elPend) elPend.textContent = pending;
+}
+
+function toggleProvision(name, itemId) {
+  if (!S.itProvision[name]) return;
+  const cur = S.itProvision[name][itemId];
+  S.itProvision[name][itemId] = cur === 'done' ? 'pending' : 'done';
+  _save();
+  renderITProvisioning();
+  const isDone = S.itProvision[name][itemId] === 'done';
+  showToast(isDone ? '✅ Accès activé — ' + name : '↩️ Accès remis en attente');
+  // if Sophie has all apps done, complete the task
+  if (name === 'Sophie Martin') {
+    const sophieDone = IT_PROVISION_ITEMS.filter(i => S.itProvision['Sophie Martin'][i.id]==='done').length;
+    if (sophieDone >= 6) completeTask(3,'apps_validated');
+  }
+}
+
+// ── Toast ──────────────────────────────────────
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  const text  = document.getElementById('toast-text');
+  if (!toast || !text) return;
+  text.textContent = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 2800);
+}
+
+// ── Init ───────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderManagerChecklist();
+  renderAgenda();
+  updateDashboard();
+  if (document.getElementById('screen-it')?.classList.contains('active')) renderITProvisioning();
+
+  // Set office filter data attributes
+  document.querySelectorAll('.office-filter').forEach(b => {
+    b.dataset.office = b.getAttribute('onclick').match(/filterOffice\('(\w+)'\)/)?.[1] || 'all';
+  });
+  document.querySelectorAll('.disc-filter').forEach(b => {
+    b.dataset.disc = b.getAttribute('onclick').match(/filterDISC\('(\w+)'\)/)?.[1] || '';
+  });
+});
+</script>
+
+</body>
+</html>
+
+
