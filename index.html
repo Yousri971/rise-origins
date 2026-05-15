@@ -461,7 +461,7 @@
         <h3 class="font-semibold text-gray-800 mb-3">📍 Nos bureaux</h3>
         <div class="space-y-2">
           <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇵🇹</span><div><p class="font-medium text-sm">Lisbonne</p><p class="text-xs text-gray-400">Bureau principal · Rua Augusta</p></div></div>
-          <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇨🇭</span><div><p class="font-medium text-sm">Charles de Bons</p><p class="text-xs text-gray-400">Siège historique · Valais</p></div></div>
+          <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇨🇭</span><div><p class="font-medium text-sm">Chêne-Bourg</p><p class="text-xs text-gray-400">Siège historique · Valais</p></div></div>
           <div class="flex items-center gap-3 p-3 bg-[#141322] rounded-xl"><span class="text-xl">🇱🇺</span><div><p class="font-medium text-sm">Luxembourg</p><p class="text-xs text-gray-400">Hub financier · Kirchberg</p></div></div>
         </div>
       </div>
@@ -558,7 +558,7 @@
           <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Bureau de rattachement</label>
           <select id="p-office" class="w-full border border-[#2a2450] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-aurora bg-[#0F0E1A] text-white">
             <option value="lisbonne" selected>🇵🇹 Lisbonne</option>
-            <option value="cdebons">🇨🇭 Charles de Bons</option>
+            <option value="cdebons">🇨🇭 Chêne-Bourg</option>
             <option value="luxembourg">🇱🇺 Luxembourg</option>
           </select>
         </div>
@@ -648,7 +648,7 @@
       <h2 class="font-semibold text-gray-800 mb-4">📍 Votre bureau — Lisbonne</h2>
       <div class="flex gap-2 mb-4">
         <button class="px-4 py-2 bg-aurora text-white rounded-xl text-sm font-medium">🇵🇹 Lisbonne</button>
-        <button class="px-4 py-2 bg-[#1A1830] text-gold rounded-xl text-sm hover:bg-aurora/20 transition" onclick="openModal('modal-bureau', 'cdebons')">🇨🇭 Ch. de Bons</button>
+        <button class="px-4 py-2 bg-[#1A1830] text-gold rounded-xl text-sm hover:bg-aurora/20 transition" onclick="openModal('modal-bureau', 'cdebons')">🇨🇭 Chêne-Bourg</button>
         <button class="px-4 py-2 bg-[#1A1830] text-gold rounded-xl text-sm hover:bg-aurora/20 transition" onclick="openModal('modal-bureau', 'luxembourg')">🇱🇺 Luxembourg</button>
       </div>
       <div class="bg-[#1A1830] rounded-2xl h-36 flex items-center justify-center mb-4 overflow-hidden">
@@ -745,7 +745,7 @@
     <div class="flex gap-2 mb-5 overflow-x-auto pb-1">
       <button onclick="filterOffice('all')" class="office-filter bg-night text-white px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="all">Tous</button>
       <button onclick="filterOffice('lisbonne')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="lisbonne">🇵🇹 Lisbonne</button>
-      <button onclick="filterOffice('cdebons')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="cdebons">🇨🇭 Ch. de Bons</button>
+      <button onclick="filterOffice('cdebons')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="cdebons">🇨🇭 Chêne-Bourg</button>
       <button onclick="filterOffice('luxembourg')" class="office-filter bg-[#1A1830] text-gray-600 px-4 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap" data-office="luxembourg">🇱🇺 Luxembourg</button>
     </div>
 
@@ -1186,7 +1186,7 @@ const people = [
   { id:1, name:'Antoine Lemaire', role:'Head of Wealth', office:'lisbonne', disc:'D', initials:'AL', emoji:'🇫🇷', desc:'Antoine va droit au but — il n\'aime pas les réunions sans décision. Pour travailler efficacement avec lui : arrivez avec une recommandation claire, pas seulement un constat. Il valorise l\'initiative et récompense l\'audace bien préparée. C\'est lui qui a fondé la practice Wealth de Lisbonne il y a 8 ans.' },
   { id:2, name:'Clara Santos',    role:'Senior Analyst', office:'lisbonne', disc:'I', initials:'CS', emoji:'🇵🇹', desc:'Clara est l\'énergie du bureau de Lisbonne. Elle adore collaborer, partager des idées et créer des connexions entre les gens. Pour travailler avec elle : laissez de la place à l\'enthousiasme, elle pense à voix haute. Référente non-officielle pour tout ce qui touche à la culture Rise et aux clients portugais.' },
   { id:3, name:'Marc Villeneuve', role:'Director',       office:'cdebons',  disc:'D', initials:'MV', emoji:'🇨🇭', desc:'Marc est le gardien des standards Rise. Exigeant mais juste, il attend de chacun qu\'il se dépasse. Pour l\'approcher : soyez ambitieux dans vos propositions, montrez que vous avez réfléchi aux implications long terme. Il a fondé Rise en 1998 et porte encore la vision de l\'entreprise au quotidien.' },
-  { id:4, name:'Ingrid Müller',   role:'Operations',     office:'cdebons',  disc:'S', initials:'IM', emoji:'🇩🇪', desc:'Ingrid est le pilier opérationnel de Charles de Bons. Calme, méthodique, elle a une mémoire institutionnelle précieuse. Pour collaborer avec elle : anticipez, donnez-lui le temps de réfléchir, ne la mettez jamais sous pression en réunion. Elle connaît chaque procédure Rise par cœur.' },
+  { id:4, name:'Ingrid Müller',   role:'Operations',     office:'cdebons',  disc:'S', initials:'IM', emoji:'🇩🇪', desc:'Ingrid est le pilier opérationnel de Chêne-Bourg. Calme, méthodique, elle a une mémoire institutionnelle précieuse. Pour collaborer avec elle : anticipez, donnez-lui le temps de réfléchir, ne la mettez jamais sous pression en réunion. Elle connaît chaque procédure Rise par cœur.' },
   { id:5, name:'Léa Fontaine',    role:'Legal & Compliance', office:'luxembourg', disc:'C', initials:'LF', emoji:'🇫🇷', desc:'Léa est la conscience juridique de Rise. Elle lit tout, vérifie tout, et a raison 95% du temps sur les points de détail. Pour travailler avec elle : documentez vos demandes par écrit, citez vos sources, ne généralisez pas. Elle est aussi la personne la plus utile à avoir de son côté en cas de dossier complexe.' },
   { id:6, name:'David Chen',      role:'Finance & Reporting', office:'luxembourg', disc:'C', initials:'DC', emoji:'🇨🇳', desc:'David est l\'architecte des reportings clients Rise. Il construit des modèles financiers d\'une précision remarquable. Pour collaborer : soyez exact dans vos chiffres, il repère les approximations immédiatement. Très disponible pour partager ses outils et méthodes avec les nouveaux arrivants.' },
   { id:7, name:'Sofia Costa',     role:'People & Culture', office:'lisbonne', disc:'S', initials:'SC', emoji:'🇵🇹', desc:'Sofia est votre première alliée chez Rise. Elle a conçu ce parcours d\'onboarding et s\'assure que chaque collaborateur se sente bien accueilli. N\'hésitez jamais à lui poser une question, même petite — c\'est littéralement sa mission. Elle organise aussi tous les moments de convivialité Rise.' },
@@ -1262,7 +1262,7 @@ const chatResponses = {
   'signature mail': '✉️ Votre signature Rise est générée automatiquement dans l\'app — rendez-vous dans **Phase 1 → L\'Aube** puis cliquez "Copier la signature".\n\nEnsuite dans Outlook : **Fichier → Options → Courrier → Signatures → Nouvelle**. Collez votre signature et définissez-la par défaut pour les nouveaux messages et les réponses.\n\nSi vous avez un doute, Romain Duval (IT) peut vous aider : r.duval@rise.fo',
   'manager': '👤 Votre manager est **Antoine Lemaire**, Head of Wealth Management, basé à Lisbonne. C\'est lui qui a piloté votre recrutement et qui sera votre boussole pendant vos premières semaines.\n\nSon bureau : 3ème étage, open space Wealth, à côté de la salle Tagus.\nEmail : a.lemaire@rise.fo · Teams : @Antoine Lemaire\n\nIl a bloqué votre Jour J de 9h à 11h pour un accueil personnalisé.',
   'applications': '💻 Voici vos accès Rise et leur statut :\n\n✅ **Microsoft 365** — Outlook, Teams, SharePoint, OneDrive. Connectez-vous via office.com avec votre email Rise.\n✅ **Microsoft Teams** — canal principal pour la communication interne. Rejoignez les équipes "Wealth Lisbonne" et "Rise Global".\n⏳ **Workday** (SIRH) — activation sous 48h. Pour congés, notes de frais et fiches de paie.\n⏳ **SharePoint Rise** — bibliothèque de documents internes. Lien : sharepoint.rise.fo\n\nPour tout problème : ouvrez un ticket IT via Teams → canal #support-it ou écrivez à it@rise.fo',
-  'family office': '🏦 Rise a été fondé en 1998 à Charles de Bons (Valais) par une famille d\'entrepreneurs souhaitant gérer leur propre patrimoine avec la même exigence qu\'une grande banque — mais sans les conflits d\'intérêt.\n\nAujourd\'hui, nous accompagnons une vingtaine de familles patrimoniales dans 4 domaines :\n\n1. **Wealth Planning** — structuration juridique, optimisation fiscale, préparation de la transmission\n2. **Asset Management** — allocation d\'actifs sur mesure, sélection de gérants, reporting consolidé\n3. **Philanthropy Advisory** — fondations, impact investing, stratégie de don\n4. **Family Governance** — conseil aux organes familiaux, pactes d\'actionnaires, éducation financière\n\nNotre force : l\'indépendance totale. Rise ne perçoit aucune rétrocession.',
+  'family office': '🏦 Rise a été fondé en 1998 à Chêne-Bourg (Valais) par une famille d\'entrepreneurs souhaitant gérer leur propre patrimoine avec la même exigence qu\'une grande banque — mais sans les conflits d\'intérêt.\n\nAujourd\'hui, nous accompagnons une vingtaine de familles patrimoniales dans 4 domaines :\n\n1. **Wealth Planning** — structuration juridique, optimisation fiscale, préparation de la transmission\n2. **Asset Management** — allocation d\'actifs sur mesure, sélection de gérants, reporting consolidé\n3. **Philanthropy Advisory** — fondations, impact investing, stratégie de don\n4. **Family Governance** — conseil aux organes familiaux, pactes d\'actionnaires, éducation financière\n\nNotre force : l\'indépendance totale. Rise ne perçoit aucune rétrocession.',
   'default': '💡 Je recherche dans la base de connaissances Rise...\n\nJe n\'ai pas encore de réponse précise sur ce sujet, mais voici comment trouver rapidement :\n\n• **Organigramme** → identifiez la bonne personne selon le sujet\n• **SharePoint Rise** → toute la documentation interne\n• **Antoine Lemaire** → votre manager pour toute question métier\n• **Sofia Costa (RH)** → s.costa@rise.fo pour tout ce qui concerne votre contrat, vos avantages ou votre intégration\n\nJe transmets votre question à l\'équipe RH — vous recevrez une réponse sous 24h. 🙏'
 };
 
@@ -1359,7 +1359,7 @@ function openModal(modalId, data) {
         <p class="text-sm leading-relaxed" style="color:#444">${p.desc}</p>
       </div>
       <div class="grid grid-cols-2 gap-2 text-xs">
-        <div class="rounded-xl p-3" style="background:#141322"><p class="mb-1" style="color:rgba(240,238,255,0.5)">Bureau</p><p class="font-medium">${p.emoji} ${p.office === 'lisbonne' ? 'Lisbonne' : p.office === 'cdebons' ? 'Charles de Bons' : 'Luxembourg'}</p></div>
+        <div class="rounded-xl p-3" style="background:#141322"><p class="mb-1" style="color:rgba(240,238,255,0.5)">Bureau</p><p class="font-medium">${p.emoji} ${p.office === 'lisbonne' ? 'Lisbonne' : p.office === 'cdebons' ? 'Chêne-Bourg' : 'Luxembourg'}</p></div>
         <div class="rounded-xl p-3" style="background:#141322"><p class="mb-1" style="color:rgba(240,238,255,0.5)">Email</p><p class="font-medium" style="color:#A78BFA">${p.name.split(' ')[0].toLowerCase()}.${p.name.split(' ')[1].toLowerCase()}@rise.fo</p></div>
       </div>
       <button class="mt-4 w-full py-2.5 rounded-xl text-sm text-white" style="background:linear-gradient(135deg,#7B5EF5,#5B3FD4)" onclick="showToast('Message envoyé à ${p.name} !'); closeModal('modal-person')">✉️ Envoyer un message</button>
@@ -1674,7 +1674,7 @@ function getBotResponse(input) {
   });
   if (match) {
     const s = discStyle[match.disc];
-    const bureau = match.office === 'lisbonne' ? '🇵🇹 Lisbonne' : match.office === 'cdebons' ? '🇨🇭 Charles de Bons' : '🇱🇺 Luxembourg';
+    const bureau = match.office === 'lisbonne' ? '🇵🇹 Lisbonne' : match.office === 'cdebons' ? '🇨🇭 Chêne-Bourg' : '🇱🇺 Luxembourg';
     const email = `${match.name.split(' ')[0].toLowerCase()}.${match.name.split(' ')[1].toLowerCase()}@rise.fo`;
     return `👤 **${match.name}** — ${match.role}\n\n📍 Bureau : ${bureau}\n✉️ Email : ${email}\n🧠 Profil DISC : **${discLabel[match.disc]}**\n\n${match.desc}\n\nVous pouvez aussi retrouver ${match.name.split(' ')[0]} dans **La Boussole** (onglet Contacts) pour voir son profil complet.`;
   }
@@ -1692,7 +1692,7 @@ function getBotResponse(input) {
     return '💰 Vos fiches de paie sont disponibles sur **Workday** chaque fin de mois. La paie est versée le **dernier jour ouvré du mois**.\n\nPour toute question sur votre rémunération, mutuelle ou avantages : contactez Sofia Costa en RH → s.costa@rise.fo ou Teams @Sofia Costa.';
 
   if (lower.includes('bureau') || lower.includes('lisbonne') || lower.includes('luxembourg') || lower.includes('charles') || lower.includes('bons') || lower.includes('adresse') || lower.includes('locaux'))
-    return '📍 Rise dispose de 3 bureaux :\n\n🇵🇹 **Lisbonne** — Rua Augusta, 12 · Baixa-Chiado · 7ème étage\n🇨🇭 **Charles de Bons** — Route de Verbier, 4 · Valais · Siège historique\n🇱🇺 **Luxembourg** — 12 rue Jean Engling · Kirchberg · Hub financier\n\nPour les accès, badges et salles de réunion : contactez Ingrid Müller (Ops) ou Romain Duval (IT).';
+    return '📍 Rise dispose de 3 bureaux :\n\n🇵🇹 **Lisbonne** — Rua Augusta, 12 · Baixa-Chiado · 7ème étage\n🇨🇭 **Chêne-Bourg** — Place de la Gare · Chêne-Bourg\n🇱🇺 **Luxembourg** — 12 rue Jean Engling · Kirchberg · Hub financier\n\nPour les accès, badges et salles de réunion : contactez Ingrid Müller (Ops) ou Romain Duval (IT).';
 
   if (lower.includes('formation') || lower.includes('apprendre') || lower.includes('training') || lower.includes('quiz'))
     return '🎓 Votre parcours de formation est personnalisé selon votre niveau IT.\n\nÉtape 1 : **Quiz IT adaptatif** (IA Knowledge → 15 min)\nÉtape 2 : Attribution automatique du parcours :\n• **Format Simple** — vidéos courtes + fiches pratiques\n• **Format Avancé** — documentation technique + accès direct\n\nLes résultats sont partagés avec Antoine Lemaire et l\'équipe IT. Rendez-vous dans l\'onglet **IA Knowledge** pour commencer.';
